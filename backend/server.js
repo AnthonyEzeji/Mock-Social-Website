@@ -12,6 +12,7 @@ const MessageRoutes = require('./Routes/MessageRoutes')
 const friendModel = require('./Models/FriendModel')
 const FriendRoutes = require('./Routes/FriendRoutes')
 const userModel = require('./Models/UserModel')
+const LoginRoutes = require('./Routes/LoginRoutes')
 mongoose.connect(DB,{useNewUrlParser: true,
     useUnifiedTopology: true }, ()=>console.log('successfully connected to db...'))
 var app = express()
@@ -29,6 +30,7 @@ const PORT = process.env.PORT
 app.use('/api/users',UserRoutes)
 app.use('/api/messages',MessageRoutes)
 app.use('/api/friends',FriendRoutes)
+app.use('/api/login',LoginRoutes)
 const sslServer = https.createServer(
     {
       key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
