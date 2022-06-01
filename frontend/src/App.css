@@ -1,6 +1,17 @@
 .App {
-  
+  color:white;
   width:100vw;
   height:100vh;
-  background-color: rgb(71, 93, 126);
+  background-color: rgb(53, 56, 61);
+
+  
+}
+
+h5{
+  text-shadow: 2px 2px black;
+  font-family: 'Lexend', sans-serif;
+}
+h3{
+  text-shadow: 2px 2px black;
+  font-family: 'Lexend', sans-serif;
 }

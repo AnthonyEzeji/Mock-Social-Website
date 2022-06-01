@@ -17,4 +17,16 @@ router.get('/:_id', async (req,res)=>{
        return res.send({error:err})
    }
 })
+router.get('/:userName', async (req,res)=>{
+    try{
+        console.log(req.params)
+     await userModel.findOne({userName:req.params.userName}).then(doc=>{
+         
+        return res.send({email:doc.email, userName:doc.userName, id:doc.id, _id:doc._id})
+     })
+    }catch(err){
+        console.log(err)
+        return res.send({error:err})
+    }
+ })
 module.exports = router

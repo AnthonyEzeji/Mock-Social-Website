@@ -1,0 +1,13 @@
+.navbar{
+
+    width: 100vw;
+    display: flex;
+    justify-content: flex-end;
+    border-bottom:1px solid black ;
+    position: absolute;
+}
+#navbar-btn{
+    border-radius: 0;
+    
+    border-left: 1px solid black;
+}

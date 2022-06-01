@@ -17,6 +17,7 @@ mongoose.connect(DB,{useNewUrlParser: true,
     useUnifiedTopology: true }, ()=>console.log('successfully connected to db...'))
 var app = express()
 app.use(cors(),express.json())
+
 app.use(session({
     secret:"secret key",
     resave:false,
@@ -36,6 +37,6 @@ const sslServer = https.createServer(
       key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
       cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem')),
     },
-    app
+    
   )
   sslServer.listen(PORT, () => console.log(`Secure server on port: ${PORT}`))
