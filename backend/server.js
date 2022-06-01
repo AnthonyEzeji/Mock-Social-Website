@@ -7,6 +7,11 @@ const fs = require('fs')
 const path = require('path')
 const session = require('express-session')
 const DB = process.env.DB
+const UserRoutes = require('./Routes/UserRoutes')
+const MessageRoutes = require('./Routes/MessageRoutes')
+const friendModel = require('./Models/FriendModel')
+const FriendRoutes = require('./Routes/FriendRoutes')
+const userModel = require('./Models/UserModel')
 mongoose.connect(DB,{useNewUrlParser: true,
     useUnifiedTopology: true }, ()=>console.log('successfully connected to db...'))
 var app = express()
@@ -21,6 +26,9 @@ maxAge : 3600000
     }
 }))
 const PORT = process.env.PORT
+app.use('/api/users',UserRoutes)
+app.use('/api/messages',MessageRoutes)
+app.use('/api/friends',FriendRoutes)
 const sslServer = https.createServer(
     {
       key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
