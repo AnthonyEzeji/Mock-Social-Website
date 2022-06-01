@@ -25,7 +25,7 @@ router.get('/:id', async (req,res)=>{
         }
        
     })
-    console.log(friends)
+    
     for(var i= 0; i < friends.length;i++){
         await userModel.findOne({id:friends[i]}).then(doc=>{
             newObj = {email:doc.email, userName:doc.userName, id:doc.id,_id:doc._id }

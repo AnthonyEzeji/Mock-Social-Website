@@ -30,16 +30,16 @@ router.get('/:_id', async (req,res)=>{
         }
     }
      uniqueIds = [... new Set(otherUsersId)]
-     console.log(uniqueIds)
+   
     
     for(var i = 0; i < uniqueIds.length;i++){
         await userModel.findOne({id:uniqueIds[i]}).then(doc2=>{
-            console.log('doc',doc2)
+            
         otherUserObjectList[i]=(doc2) 
         })
         
     }
-    console.log(otherUserObjectList)
+    
     for(var i = 0; i < otherUserObjectList.length;i++){
     await  messagesModel.find({$or:[{sentFrom:user.id, sentTo:otherUserObjectList[i].id},{sentFrom:otherUserObjectList[i].id, sentTo:user.id}]}).then(doc3=>{
           
@@ -61,19 +61,26 @@ router.get('/:_id/:id', async (req,res)=>{
     try{
         var messages = []
         var user = {}
+        var response = []
       await userModel.findById(req.params._id).then(doc=>{
           user = doc
-          messagesModel.find({$or:[{sentTo:doc.id}, {sentFrom:doc.id}]}).then(doc1=>{
-             console.log(doc1)
-             messages = doc1
-             return res.send(doc1)
-          })
-   for(var i =0; i < messages.length;  i++){
-       if(messages[i].sentFrom == req.params.id || messages[i].sentTo == req.params.id){
+         
+         
 
-       }
-   }
      })
+    await messagesModel.find({$or:[{sentTo:user.id}, {sentFrom:user.id}]}).then(doc1=>{
+        
+        messages = doc1
+        
+     })
+     
+
+     for(var i =0; i < messages.length;  i++){
+        if(messages[i].sentFrom == req.params.id || messages[i].sentTo == req.params.id){
+            response.push(messages[i])
+        }
+    }
+    return res.send(response)
     }catch(err){
         console.log(err)
         return res.send({error:err})

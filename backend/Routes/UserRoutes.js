@@ -7,9 +7,9 @@ const router = express.Router()
 
 router.get('/:_id', async (req,res)=>{
    try{
-       console.log(req.params)
+       
     await userModel.findById(req.params._id).then(doc=>{
-        console.log(doc)
+        
        return res.send({email:doc.email, userName:doc.userName, id:doc.id, _id:doc._id})
     })
    }catch(err){
