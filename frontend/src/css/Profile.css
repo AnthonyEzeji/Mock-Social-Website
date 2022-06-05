@@ -6,3 +6,11 @@
     width: 100vw;
     height: 100vh;
 }
+.profile-body{
+    display: flex;
+    
+
+}
+.posts{
+    width:40vw
+}

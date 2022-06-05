@@ -1,13 +1,22 @@
 import { Avatar } from '@mui/material'
+import axios from 'axios';
+
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router';
 import '../css/Card.css'
 function Card() {
+  var params = useParams()
     const [user, setUser] = useState({});
     useEffect(() => {
-         setUser(JSON.parse(window.sessionStorage.getItem('session')).user) 
-        
-    }, [])
-    
+        async function getCardInfo(){
+          await axios.get(`https://localhost:5000/api/users/1/${params._id}`).then(res=>{
+            console.log(res.data)
+            setUser(res.data)
+          })
+        }
+        getCardInfo()
+    }, [params])
+    console.log(user)
     
   return (
     <div className='card'>

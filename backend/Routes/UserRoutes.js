@@ -5,7 +5,7 @@ const userModel = require('../Models/UserModel')
 const router = express.Router()
 
 
-router.get('/:_id', async (req,res)=>{
+router.get('/1/:_id', async (req,res)=>{
    try{
        
     await userModel.findById(req.params._id).then(doc=>{

@@ -1,23 +1,30 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { useRedirect } from 'react-admin'
+import { useNavigate, useParams } from 'react-router'
 import '../css/FriendsList.css'
 
 function FriendsList() {
+    var params = useParams()
+    var redirect = useRedirect()
+  
+    
     var user = {}
+    var navigate = useNavigate()
     const [friendsList, setFriendsList] = useState([])
     useEffect(() => {
-user = JSON.parse(window.sessionStorage.getItem('session')).user
+
     async function getFriends(){
-        await axios.get(`https://localhost:5000/api/friends/${user.id}`).then(res=>{
+        await axios.get(`https://localhost:5000/api/friends/${params._id}`).then(res=>{
             setFriendsList(res.data)
         })
     }
     getFriends()
-    }, [])
+    }, [params])
     async function handleFriendClick(e){
         
         await axios.get(`https://localhost:5000/api/users/${e.target.innerText}`).then(res=>{
-            console.log(res.data)
+            navigate(`/profile/${res.data._id}`)
         })
     }
   return (

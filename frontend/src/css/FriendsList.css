@@ -15,7 +15,8 @@ padding-bottom:20px;
     display:flex ;
     justify-content: center;
     align-items: center;
-    
+    display: flex;
+    flex-direction: column;
     width: 200px;
 min-width: 150px;
 background-color: rgba(240, 248, 255, 0.096);
@@ -31,7 +32,8 @@ border-top: 1px solid black;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-   
+   display: flex;
+   flex-direction: column;
     text-align: center;
     padding:0;
 
@@ -50,4 +52,18 @@ padding-top:25px;
 min-width: 150px;
 
     
+}
+.messages{
+    position: absolute;
+    right: 20px;
+    border-radius: 20px;
+    margin-top: 20px;
+    margin-left:20px;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+   justify-content: flex-start;
+padding-bottom:20px;
+   align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
 }

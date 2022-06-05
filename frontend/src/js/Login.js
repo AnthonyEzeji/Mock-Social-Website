@@ -20,7 +20,7 @@ function Login() {
             
                       
                       console.log(res.data)
-                      navigate('/profile')
+                      navigate(`/profile/${res.data.user._id}`)
                       
                        
                      

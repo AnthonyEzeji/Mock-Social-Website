@@ -1,3 +1,5 @@
+
+
 const express = require('express')
 
 const mongoose = require('mongoose')
@@ -7,6 +9,7 @@ const router = express.Router()
 
 
 router.get('/:_id', async (req,res)=>{
+    
    try{
       
     var messages = []
@@ -57,12 +60,13 @@ return res.send(response)
        return res.send({error:err})
    }
 })
-router.get('/:_id/:id', async (req,res)=>{
+router.get('/:_id/:userName', async (req,res)=>{
     try{
+        console.log('hit')
         var messages = []
         var user = {}
         var response = []
-      await userModel.findById(req.params._id).then(doc=>{
+      await userModel.findOne({userName:req.params.userName}).then(doc=>{
           user = doc
          
          
@@ -76,7 +80,7 @@ router.get('/:_id/:id', async (req,res)=>{
      
 
      for(var i =0; i < messages.length;  i++){
-        if(messages[i].sentFrom == req.params.id || messages[i].sentTo == req.params.id){
+        if(messages[i].sentFrom == user.id || messages[i].sentTo == user.id){
             response.push(messages[i])
         }
     }

@@ -7,15 +7,20 @@ const router = express.Router()
 const friendModel = require('../Models/FriendModel')
 
 
-router.get('/:id', async (req,res)=>{
+router.get('/:_id', async (req,res)=>{
    try{
+       console.log(req.params)
+       var id = null
+       await userModel.findById(req.params._id).then(doc=>{
+           id = doc.id
+       })
       var  friends=[]
 
       var friendsListToSend = []
-    await friendModel.find({$or:[{user1:req.params.id}, {user2:req.params.id}]}).then(docs=>{
+    await friendModel.find({$or:[{user1:id}, {user2:id}]}).then(docs=>{
         
         for(var i = 0; i < docs.length; i++){
-            if(docs[i].user1==req.params.id){
+            if(docs[i].user1==id){
             
                 friends.push(docs[i].user2)
             }else{
