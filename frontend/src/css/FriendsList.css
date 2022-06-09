@@ -3,6 +3,7 @@
     margin-top: 20px;
     margin-left:20px;
     display: flex;
+    height: fit-content;
     flex-direction: column;
     width: fit-content;
    justify-content: flex-start;

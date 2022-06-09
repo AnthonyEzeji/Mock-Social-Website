@@ -1,0 +1,104 @@
+.posts{
+    
+    width: 50vw;
+    height:fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left:30px;overflow: auto;
+    margin-top:20px;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+
+}
+.posts-container{
+  
+   
+   margin-top:0;
+    display: flex;
+    width: 100%;
+    padding-left:0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+
+}
+.post{
+margin-top:0;
+   text-align: center;
+    min-width: 150px;
+background-color: rgba(240, 248, 255, 0.096);
+    list-style-type: none;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+margin-left:0;
+width: 100%;
+height: fit-content;
+min-height: 100px;;
+border-bottom:1px solid rgba(0, 0, 0, 0.39);
+border-top:1px solid rgba(0, 0, 0, 0.336);
+    overflow-y: auto;
+
+}
+.posts>h3{
+    text-align: center;
+    display:flex ;
+    align-items: center;
+    justify-content: center;
+ margin:0;
+ height: 60px;;
+
+}
+.post-side{
+    
+    height: 100%;
+   display: flex; 
+   flex-direction: column;
+   justify-content: flex-end;
+   align-items: center;
+  
+  
+
+}
+#p{width:80%;margin:0;height: fit-content;padding:0;overflow-wrap:break-word;
+
+}
+#likes{
+    
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    padding: 0;
+}
+#post-username{
+    margin:0;
+}
+.post-body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+    
+}
+.post-input-container{
+background-color: aliceblue;
+width: 100%;
+height:fit-content;
+}
+#post-input{
+    min-height: 50px;
+   color: aliceblue;
+  
+   
+    
+    background-color: rgba(240, 248, 255, 0.096);
+}

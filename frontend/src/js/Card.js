@@ -10,13 +10,13 @@ function Card() {
     useEffect(() => {
         async function getCardInfo(){
           await axios.get(`https://localhost:5000/api/users/1/${params._id}`).then(res=>{
-            console.log(res.data)
+            
             setUser(res.data)
           })
         }
         getCardInfo()
     }, [params])
-    console.log(user)
+    
     
   return (
     <div className='card'>

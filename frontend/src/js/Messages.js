@@ -3,28 +3,114 @@ import React, { useEffect, useState } from 'react'
 import { Button } from 'react-admin'
 import { Navigate, useNavigate, useParams } from 'react-router'
 import '../css/FriendsList.css'
-function Messages() {
+import {db} from './Firebase'
+import {query,where, onSnapshot, collection, addDoc, getDocs, orderBy } from "firebase/firestore";
 
+function Messages() {
+    var otherUsersId = []
+    var uniqueIds = []
     var params = useParams()
+    
+    
     var navigate = useNavigate()
     const [messages, setMessages] = useState([])
+    const [messagesList, setMessagesList] = useState([])
+    var arr = []
+    var objectToPush = []
+    var data = {}
+    var messagesArr = []
+  
+    var tempArr = []
+    var currUser = {}
     useEffect(() => {
-
-    async function getMessages(){
-    await axios.get(`https://localhost:5000/api/messages/${JSON.parse(window.sessionStorage.getItem('session')).user._id}`).then(res=>{
-        setMessages(res.data)
+        async function getMessages(){
+         
+            function compareMessages(currentElement){
+               
+                 if(currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('session')).user.id||currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('session')).user.id){   
+                     return true
+                 }
+             
+             }
+             function compareTime( a, b )
+             {
+             if ( a.createdAt < b.createdAt){
+               return -1;
+             }
+             if ( a.createdAt > b.createdAt){
+               return 1;
+             }
+             return 0;
+           }
+            var currRec = JSON.parse(window.sessionStorage.getItem('currRec'))
+            const messagesRef = collection(db, "messages");
+            
+            const q = query(messagesRef, orderBy("createdAt", "desc"));
+            const unsubscribe = await onSnapshot(q,snapshot=>{
+                setMessages(snapshot.docs.sort(compareTime).filter(compareMessages).map(doc=>{return doc.data()})) 
+            })
+        }
         
-    })
-    }
-    getMessages()
+   
+      
+      return () => {
+        getMessages()
+      }
     }, [])
+
+    useEffect(() => {
+  
+       tempArr = []
+       
+       messages.forEach(doc=>{
+           var data = doc
+           if(data.sentFrom == JSON.parse(window.sessionStorage.getItem('session') ).user.id){
+               tempArr.push(data.sentTo)
+               
+           }else{
+               tempArr.push(data.sentFrom)
+           }
+       })
+    var newSet = [...new Set(tempArr)]
+   
+        newSet.forEach(async id=>{
+            var userMessages = []
+            currUser = {}
+            await axios.get(`https://localhost:5000/api/users/2/${id}`).then(res=>{
+               currUser = res.data
+                
+            })
+            messages.forEach(doc=>{
+                
+                if(doc.sentTo == id||doc.sentFrom==id){
+                    
+                    userMessages.push(doc)
+                   
+                }
+            })
+           
+          arr.push({data:userMessages, currUser})
+          setMessagesList(arr.map((doc)=>doc))
+        })
+
+    
+      return () => {
+        
+      }
+    }, [messages])
+    
+ 
+ 
     async function handleMessageClick(e){
-for(var i = 0 ; i < messages.length;i++){
+for(var i = 0 ; i < messagesList.length;i++){
 
 
-    if(messages[i].otherUser.userName == e.target.parentNode.firstChild.innerText ){
-        window.sessionStorage.setItem('curr-recipient',e.target.parentNode.firstChild.innerText.toString() )
-        navigate(`/chat/${window.sessionStorage.getItem('curr-recipient')}`)
+    if(messagesList[i].currUser.userName == e.target.parentNode.firstChild.innerText ){
+    
+        await axios.get(`https://localhost:5000/api/users/${e.target.parentNode.firstChild.innerText.toString()}`).then(res=>{
+            window.sessionStorage.setItem('currRec', JSON.stringify(res.data))
+        })
+        navigate(`/chat/${e.target.parentNode.firstChild.innerText.toString()}`)
     }
 }
     }
@@ -32,15 +118,14 @@ for(var i = 0 ; i < messages.length;i++){
     <div className='messages'>
     <h3>Messages</h3>
     <ul className='item-container'>
-        {messages.map((obj,index)=>{
-            var date = new Date(obj.messages[obj.messages.length-1].createdAt)
+        {messagesList.map((obj,index)=>{
+            
+            
             
             return (
-            <li key={index} className='friends-list-item'>
-                <h5>{obj.otherUser.userName}</h5>
-                <p>{obj.messages[obj.messages.length-1].text}</p>
-                <p>{date.getUTCHours().toString()+':'+date.getUTCMinutes().toString()+'-'+date.getUTCMonth()+'/'+date.getUTCDate()+'/'+date.getUTCFullYear().toString().split('0')[1]}</p>
-               <button onClick= {(e)=>handleMessageClick(e)}>click</button>
+            <li onClick={(e)=>handleMessageClick(e)} key={index} className='friends-list-item'>
+                <h5>{obj.currUser.userName}</h5>
+                <p>{obj.data[0].text}</p>
             </li>
             )
         })}

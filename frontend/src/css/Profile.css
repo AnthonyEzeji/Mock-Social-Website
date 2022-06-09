@@ -8,9 +8,6 @@
 }
 .profile-body{
     display: flex;
-    
+    justify-content: center;
 
-}
-.posts{
-    width:40vw
 }
