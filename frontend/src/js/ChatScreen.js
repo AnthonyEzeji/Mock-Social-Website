@@ -5,7 +5,9 @@ import { useParams } from 'react-router'
 import axios from 'axios'
 import '../css/ChatScreen.css'
 import {db}from './Firebase'
+
 import {serverTimestamp,addDoc, doc, setDoc , collection, getDocs, onSnapshot, query, where, orderBy} from 'firebase/firestore'
+import NavBar from './NavBar'
 function
 ChatScreen() {
     var params = useParams()
@@ -13,7 +15,7 @@ ChatScreen() {
     const [input, setInput] = useState('')
   
  
-    console.log(JSON.parse(window.sessionStorage.getItem('currRec')))
+    
     useEffect(() => {
         async function getRecipient(){
         
@@ -41,7 +43,7 @@ ChatScreen() {
 
 function compareMessages(currentElement){
    var currRec = JSON.parse(window.sessionStorage.getItem('currRec'))
-  console.log(JSON.parse(window.sessionStorage.getItem('currRec')))
+ 
     if((currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('session')).user.id&&currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('currRec')).id)||(currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('session')).user.id&&currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('currRec')).id)){   
         return true
     }
@@ -75,9 +77,9 @@ function compareMessages(currentElement){
             getMessages()
         }
 
-    }, [])
+    }, [params])
    
-console.log(messages)
+
  
 async function handleSendClick(){
     document.getElementById('chat-input').value =null
@@ -90,6 +92,7 @@ async function handleSendClick(){
 }
   return (
     <div className='chat-screen'>
+        <NavBar></NavBar>
         <div className='chat-container'>
       
         <div className='chat-display'>
@@ -97,7 +100,7 @@ async function handleSendClick(){
           
              if(message.sentFrom == JSON.parse(window.sessionStorage.getItem('session')).user.id ){
                  if(message.createdAt!=null){
-                    console.log(message.createdAt.seconds)
+                   
                     var seconds = message.createdAt.seconds
                       var nanoseconds = message.createdAt.nanoseconds
                     const fireBaseTime = new Date(
@@ -105,7 +108,7 @@ async function handleSendClick(){
                       );
                       const date = fireBaseTime.toDateString();
                       const atTime = fireBaseTime.toLocaleTimeString();
-                      console.log(fireBaseTime)
+                      
                       return(<div key = {index} className = 'sent-from'>
                       <div className= 'sent-from-container'>
                       <p id = 'text'>{message.text}</p>
@@ -120,7 +123,7 @@ async function handleSendClick(){
                
             }else if(message.sentTo == JSON.parse(window.sessionStorage.getItem('session')).user.id ){
                 if(message.createdAt!=null){
-                    console.log(message.createdAt.seconds)
+               
                     var seconds = message.createdAt.seconds
                       var nanoseconds = message.createdAt.nanoseconds
                     const fireBaseTime = new Date(

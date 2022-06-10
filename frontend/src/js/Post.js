@@ -1,12 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import '../css/Posts.css'
-import { collection, deleteDoc, doc, getDoc, increment, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, increment, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { db } from './Firebase';
 import { Avatar, Input } from '@mui/material';
 import { Button } from '@mui/material';
+
 function Post(props) {
-    console.log(props.props.post)
+    console.log(props.props)
+    const [userInfo, setUserInfo] = useState({})
+    useEffect(() => {
+      props.props.friendsList.forEach(friend=>{
+          if(friend.userName == props.props.post.data.userName){
+             setUserInfo(friend)
+          }
+      })
+      if(props.props.post.data.userName == props.props.userFirestore.userName){
+          setUserInfo(props.props.userFirestore)
+      }
+    
+      return () => {
+        
+      }
+    }, [])
+    
+ 
+
+    
+    
     async function handleLikeClick(e){
         console.log(e.target.id.length)
         if(e.target.id.length>0){
@@ -53,7 +74,7 @@ function Post(props) {
     <li key={props.index} className='post'>
         <div className = 'post-side'>
             
-            <Avatar src = 'https://th.bing.com/th/id/OIP.FnEir38XOjP1zzwixrMcgwHaHa?pid=ImgDet&rs=1'></Avatar>
+            <Avatar src = {props.props.post.data.avatar}></Avatar>
            
         </div>
         
@@ -61,9 +82,9 @@ function Post(props) {
         <h5 id = "post-username">{props.props.post.data.userName}</h5>
         <p id = 'p'>{props.props.post.data.text}</p>
 <div id='likes'>
-    <h4>{props.props.post.data.likes.length}</h4>
-    <Button style={{backgroundColor:'white', marginRight:5}} onClick={(e)=>handleLikeClick(e)} id={props.props.post.id}>Like </Button>
-    {JSON.parse(window.sessionStorage.getItem('session')).user.userName==props.props.post.data.userName?<Button style={{backgroundColor:'red', marginRight:5, color:'white'}} id = {props.props.post.id} onClick={(e)=>handleDeleteClick(e)}>Delete</Button>:<></>}
+    
+    <Button style={{color:'black',borderLeft:"1px solid black" ,borderTop:"1px solid black",backgroundColor:"white", borderRadius:0,marginLeft:5,width:"50%"}} onClick={(e)=>handleLikeClick(e)} id={props.props.post.id}>like:{props.props.post.data.likes.length}</Button>
+    {JSON.parse(window.sessionStorage.getItem('session')).user.userName==props.props.post.data.userName?<Button className = 'delete-btn' style={{color:'white',borderRight:"1px solid black" ,borderTop:"1px solid black", borderRadius:0, backgroundColor:"red", marginRight:5, color:'white',width:"50%"}} id = {props.props.post.id} onClick={(e)=>handleDeleteClick(e)}>Delete</Button>:<></>}
 </div>
         </div>
 
