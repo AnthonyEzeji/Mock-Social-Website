@@ -83,8 +83,8 @@ function Post(props) {
         <p id = 'p'>{props.props.post.data.text}</p>
 <div id='likes'>
     
-    <Button style={{color:'black',borderLeft:"1px solid black" ,borderTop:"1px solid black",backgroundColor:"white", borderRadius:0,marginLeft:5,width:"50%"}} onClick={(e)=>handleLikeClick(e)} id={props.props.post.id}>like:{props.props.post.data.likes.length}</Button>
-    {JSON.parse(window.sessionStorage.getItem('session')).user.userName==props.props.post.data.userName?<Button className = 'delete-btn' style={{color:'white',borderRight:"1px solid black" ,borderTop:"1px solid black", borderRadius:0, backgroundColor:"red", marginRight:5, color:'white',width:"50%"}} id = {props.props.post.id} onClick={(e)=>handleDeleteClick(e)}>Delete</Button>:<></>}
+{JSON.parse(window.sessionStorage.getItem('session')).user.userName==props.props.post.data.userName?<Button  style={{color:'white',borderLeft:"1px solid grey" ,borderTop:"1px solid grey", borderRadius:0,width:"50%"}} onClick={(e)=>handleLikeClick(e)} id={props.props.post.id}>like:{props.props.post.data.likes.length}</Button>:<Button style={{borderRight:"1px solid grey",color:'white',borderLeft:"1px solid grey" ,borderTop:"1px solid grey", borderRadius:0,width:"100%"}} onClick={(e)=>handleLikeClick(e)} id={props.props.post.id}>like:{props.props.post.data.likes.length}</Button>}
+    {JSON.parse(window.sessionStorage.getItem('session')).user.userName==props.props.post.data.userName?<Button className = 'delete-btn' style={{color:'white',borderRight:"1px solid grey" ,borderTop:"1px solid grey", borderRadius:0, color:'white',width:"50%"}} id = {props.props.post.id} onClick={(e)=>handleDeleteClick(e)}>Delete</Button>:<></>}
 </div>
         </div>
 
