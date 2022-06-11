@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Input, TextField } from '@mui/material'
+import { Autocomplete, Button, colors, Input, TextField } from '@mui/material'
 import axios from 'axios'
 import { doc,addDoc, collection, deleteDoc, getDoc, onSnapshot, serverTimestamp } from 'firebase/firestore'
 
@@ -97,8 +97,8 @@ function FriendsList() {
         }, [friendRequests])
         console.log(friendRequestsToDisplay)
     async function handleFriendClick(e){
-        
-        await axios.get(`https://localhost:5000/api/users/${e.target.innerText}`).then(res=>{
+
+        await axios.get(`https://localhost:5000/api/users/${e.target.parentNode.parentNode.firstChild.innerText}`).then(res=>{
             navigate(`/profile/${res.data._id}`)
         })
        
@@ -174,7 +174,7 @@ function FriendsList() {
                                 addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
                             }else if(friend.user1==inputValue&& counter<1){
                                 counter = counter+1
-                                alert('account selected is already a friend1')
+                                alert('account selected is already a friend')
                             }
                         }else if(friend.user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName){
                             if(friend.user2 != inputValue&&counter<1 ){
@@ -183,7 +183,7 @@ function FriendsList() {
                                 addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
                             }else if(friend.user2 == inputValue&&counter<1 ){
                                 counter = counter+1
-                                alert('account selected is already a friend2')
+                                alert('account selected is already a friend')
                             }
     
                         }
@@ -236,6 +236,9 @@ function FriendsList() {
 
     }
     console.log(friendRequests)
+    function handleDeleteFriendClick(e){
+        console.log(e.target.id)
+    }
   return (
     <div className='friends-list'>
         <h3>Friends</h3>
@@ -277,12 +280,19 @@ function FriendsList() {
             }):<></>}
         {friendsList.map((friend,index)=>{
             if(friend.user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName ){
-                return(<li key={index} onClick = {(e)=>handleFriendClick(e)}className='friends-list-item'>
+                return(<li key={index} className='friends-list-item'>
                 <p>{friend.user2}</p>
+                <div> <Button style={{color:"black",backgroundColor:'grey', margin:5}} onClick = {(e)=>handleFriendClick(e)}>Profile</Button>
+                <Button style={{color:"black",backgroundColor:'red', margin:5}} id={friend.user2} onClick={(e)=>handleDeleteFriendClick(e)}>Delete</Button></div>
+               
             </li>)
             }else{
                 return(<li key={index} onClick = {(e)=>handleFriendClick(e)}className='friends-list-item'>
                 <p>{friend.user1}</p>
+                <div>
+                    <Button style={{color:"black",backgroundColor:'grey', margin:5}} onClick = {(e)=>handleFriendClick(e)}>Profile</Button>
+                <Button style={{color:"black",backgroundColor:'red', margin:5}} id={friend.user1} onClick={(e)=>handleDeleteFriendClick(e)}>Delete</Button></div>
+                
             </li>)
             }
            

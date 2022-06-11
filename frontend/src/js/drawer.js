@@ -13,7 +13,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import { useNavigate, useParams } from 'react-router';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
-
+import '../css/drawer.css'
 import { db } from './Firebase';
 import axios from 'axios';
 import { ClickAwayListener, MenuItem, Select } from '@mui/material';
@@ -204,14 +204,14 @@ for(var i = 0 ; i < messagesList.length;i++){
         {messagesList.map((obj, index) => {
           
          return( <ListItem key={obj.data[0].text} disablePadding>
-            <ListItemButton id={obj.currUser.userName} onClick = {async(e)=>{
+            <ListItemButton className='message-item' id={obj.currUser.userName} onClick = {async(e)=>{
                 await axios.get(`https://localhost:5000/api/users/${e.target.id}`).then(res=>{
                     window.sessionStorage.setItem('currRec', JSON.stringify(res.data))
                 })
                 navigate(`/chat/${e.target.id}`)
-            }} style={{display:'flex',flexDirection:'column',backgroundColor:'grey', color:'white', fontWeight:600}}>
+            }} style={{display:'flex',flexDirection:'column',backgroundColor: 'rgba(240, 248, 255, 0.096)', color:'white', fontWeight:600}}>
             <h5 id={obj.currUser.userName} style={{textShadow:'0px 0px', margin:0}}>{obj.currUser.userName}</h5>
-            <p id={obj.currUser.userName}>{obj.data[0].text}</p>
+            <p className = "preview" id={obj.currUser.userName}>{obj.data[0].text}</p>
             </ListItemButton>
           </ListItem>)
 })}

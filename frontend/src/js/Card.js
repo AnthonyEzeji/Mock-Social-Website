@@ -78,7 +78,7 @@ function Card() {
         </div>
         <div className="bio">
             <h3>Bio</h3>
-            <TextareaAutosize onChange={(e)=>{setInput(e.target.value)}} style={{textAlign:"center",width:'100%',height:'100%',maxHeight:'98%'}} readOnly={!checked} defaultValue={userFirestore.bio}>{}</TextareaAutosize>
+            <TextareaAutosize onChange={(e)=>{setInput(e.target.value)}} style={{textAlign:"center",width:'100%',height:'100%',maxHeight:'98%', maxWidth:"98%"}} readOnly={!checked} defaultValue={userFirestore.bio}>{}</TextareaAutosize>
         </div>
     </div>
   )

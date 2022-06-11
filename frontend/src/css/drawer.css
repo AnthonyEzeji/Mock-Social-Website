@@ -1,0 +1,19 @@
+
+.MuiListItem-root{
+    background-color: rgb(68, 80, 92);
+  margin-top:2.5px;
+  margin-bottom:2.5px;
+}
+.preview{
+    width: 100%;
+    overflow-wrap:break-word;
+    text-overflow: ellipsis;
+    height: 60px;
+    /* Required for text-overflow to do anything */
+    
+    overflow: hidden;
+  
+    text-align: center;
+    background-color: rgb(245, 244, 244);
+    color: rgb(0, 0, 0);
+}

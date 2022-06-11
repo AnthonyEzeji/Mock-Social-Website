@@ -11,3 +11,12 @@
     justify-content: center;
 
 }
+@media (max-width: 450px) {
+    .profile-body{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    
+    }
+  }
