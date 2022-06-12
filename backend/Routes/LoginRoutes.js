@@ -6,6 +6,7 @@ const router = express.Router()
 
 
 router.post('/', async (req,res)=>{
+    console.log(req.body)
    try{
        
    await userModel.findOne({userName:req.body.userName}).then(doc=>{
