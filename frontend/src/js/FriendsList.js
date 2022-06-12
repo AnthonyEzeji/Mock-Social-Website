@@ -77,13 +77,13 @@ function FriendsList() {
                 console.log(request)
                 
                if(request.to ==  JSON.parse(window.sessionStorage.getItem('session')).user.userName){
-                 await axios.get(`https://3.92.186.223:5000/api/users/2/${request.from}`).then(res=>{
+                 await axios.get(`https://localhost:5000/api/users/2/${request.from}`).then(res=>{
                     tempArr.push({request,user:res.data}) 
                    
                 })
                    
                }else{
-                await axios.get(`https://3.92.186.223:5000/api/users/2/${request.to}`).then(res=>{
+                await axios.get(`https://localhost:5000/api/users/2/${request.to}`).then(res=>{
                     tempArr.push({request,user:res.data}) 
                     
                 })
@@ -98,7 +98,7 @@ function FriendsList() {
         console.log(friendRequestsToDisplay)
     async function handleFriendClick(e){
 
-        await axios.get(`https://3.92.186.223:5000/api/users/${e.target.parentNode.parentNode.firstChild.innerText}`).then(res=>{
+        await axios.get(`https://localhost:5000/api/users/${e.target.parentNode.parentNode.firstChild.innerText}`).then(res=>{
             navigate(`/profile/${res.data._id}`)
         })
        
