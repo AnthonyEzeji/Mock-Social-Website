@@ -55,7 +55,7 @@ const [bool, setBool] = useState(false)
       
       async function getCurrentFriendSelection(e){
           console.log(e.target.id)
-          await axios.get(`https://localhost:5000/api/users/${e.target.id}`).then(res=>{
+          await axios.get(`https://3.92.186.223:5000/api/users/${e.target.id}`).then(res=>{
               window.sessionStorage.setItem('currRec',JSON.stringify(res.data))
               console.log(res.data)
           })
@@ -150,7 +150,7 @@ const [bool, setBool] = useState(false)
       newSet.forEach(async id=>{
           var userMessages = []
           currUser = {}
-          await axios.get(`https://localhost:5000/api/users/2/${id}`).then(res=>{
+          await axios.get(`https://3.92.186.223:5000/api/users/2/${id}`).then(res=>{
              currUser = res.data
               
           })
@@ -181,7 +181,7 @@ for(var i = 0 ; i < messagesList.length;i++){
 
   if(messagesList[i].currUser.userName == e.target.parentNode.firstChild.innerText ){
   
-      await axios.get(`https://localhost:5000/api/users/${e.target.parentNode.firstChild.innerText.toString()}`).then(res=>{
+      await axios.get(`https://3.92.186.223:5000/api/users/${e.target.parentNode.firstChild.innerText.toString()}`).then(res=>{
           window.sessionStorage.setItem('currRec', JSON.stringify(res.data))
       })
       navigate(`/chat/${e.target.parentNode.firstChild.innerText.toString()}`)
@@ -205,7 +205,7 @@ for(var i = 0 ; i < messagesList.length;i++){
           
          return( <ListItem key={obj.data[0].text} disablePadding>
             <ListItemButton className='message-item' id={obj.currUser.userName} onClick = {async(e)=>{
-                await axios.get(`https://localhost:5000/api/users/${e.target.id}`).then(res=>{
+                await axios.get(`https://3.92.186.223:5000/api/users/${e.target.id}`).then(res=>{
                     window.sessionStorage.setItem('currRec', JSON.stringify(res.data))
                 })
                 navigate(`/chat/${e.target.id}`)

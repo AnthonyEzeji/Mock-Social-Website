@@ -12,7 +12,7 @@ function Login() {
         async function getLoginAuth(){
             if(window.sessionStorage.hasOwnProperty('session')){
                 if( window.sessionStorage.getItem('session')!=null){
-                  await axios.post('https://localhost:5000/api/login', {userName : JSON.parse(window.sessionStorage.getItem('session')).user.userName, password:JSON.parse(window.sessionStorage.getItem('session')).user.password}).then(res=>{
+                  await axios.post('https://3.92.186.223:5000/api/login', {userName : JSON.parse(window.sessionStorage.getItem('session')).user.userName, password:JSON.parse(window.sessionStorage.getItem('session')).user.password}).then(res=>{
                     console.log(res.data)
                     if(res.data.isAuth){
                       
@@ -45,7 +45,7 @@ useEffect(() => {
     setCredentials({userName:credentials.userName,password:e.target.value})
 }
     async function handleLoginClick(e){
-await axios.post('https://localhost:5000/api/login',credentials).then(res=>{
+await axios.post('https://3.92.186.223:5000/api/login',credentials).then(res=>{
     console.log(res.data)
     if(res.data.hasOwnProperty('isAuth')){
         if(res.data.isAuth){
