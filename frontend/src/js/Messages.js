@@ -47,6 +47,7 @@ function Messages() {
             
             const q = query(messagesRef, orderBy("createdAt", "desc"));
             const unsubscribe = await onSnapshot(q,snapshot=>{
+                console.log(snapshot.docs)
                 setMessages(snapshot.docs.sort(compareTime).filter(compareMessages).map(doc=>{return doc.data()})) 
             })
         }
@@ -59,7 +60,7 @@ function Messages() {
     }, [])
 
     useEffect(() => {
-  
+  console.log(messages)
        tempArr = []
        
        messages.forEach(doc=>{
@@ -78,7 +79,7 @@ function Messages() {
             currUser = {}
             await axios.get(`https://3.92.186.223:5000/api/users/2/${id}`).then(res=>{
                currUser = res.data
-                
+                console.log(res.data)
             })
             messages.forEach(doc=>{
                 
@@ -102,6 +103,7 @@ function Messages() {
  
  
     async function handleMessageClick(e){
+        console.log(messagesList)
 for(var i = 0 ; i < messagesList.length;i++){
 
 
