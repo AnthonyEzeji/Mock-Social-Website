@@ -31,7 +31,10 @@ function Login() {
               }
 
         }
-   getLoginAuth()
+        return ()=>{
+          getLoginAuth()
+        }
+   
        
       }, [])
     const [credentials, setCredentials] = useState({userName:'',password:''})
@@ -72,7 +75,7 @@ await axios.post('https://3.92.186.223:5000/api/login',credentials).then(res=>{
             <Button onClick={(e)=>handleLoginClick(e)}>Login</Button>
 
             <p>
-                Don't have an account? <Link to='/'>Register here.</Link>
+                Don't have an account? <Link to='/register'>Register here.</Link>
             </p>
             
         </div>
