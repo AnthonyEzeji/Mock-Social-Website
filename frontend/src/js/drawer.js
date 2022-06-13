@@ -73,7 +73,7 @@ console.log(session)
   
       function compareFriends(currentElement){
       console.log(JSON.parse(window.sessionStorage.getItem('session')))
-          if(currentElement.data().user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName  ){
+          if(currentElement.data().user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName ||currentElement.data().user2 == JSON.parse(window.sessionStorage.getItem('session')).user.userName  ){
               
               return true
           }else{
