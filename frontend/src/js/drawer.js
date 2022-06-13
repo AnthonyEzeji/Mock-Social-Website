@@ -53,7 +53,7 @@ const [bool, setBool] = useState(false)
   var currUser = {}
 useEffect(() => {
   console.log('hello')
-  console.log(JSON.parse(window.sessionStorage.getItem('session')).user.userName||currentElement.data().user2==JSON.parse(window.sessionStorage.getItem('session')))
+  console.log(JSON.parse(window.sessionStorage.getItem('session')))
 }, [])
 
       

@@ -24,7 +24,7 @@ function Messages() {
     var tempArr = []
     var currUser = {}
     useEffect(() => {
-        try {
+        
             async function getMessages(){
          
                 function compareMessages(currentElement){
@@ -52,15 +52,13 @@ function Messages() {
                     console.log(snapshot.docs)
                     setMessages(snapshot.docs.sort(compareTime).filter(compareMessages).map(doc=>{return doc.data()})) 
                 })
-                return () => {
-                    getMessages()
-                  }
+               
             }
-        } catch (error) {
-            console.log(error)
-        }
        
-        
+       
+            return () => {
+                getMessages()
+              }
    
       
      
