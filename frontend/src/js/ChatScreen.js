@@ -57,7 +57,11 @@ ChatScreen() {
           console.log('here2')
             var currRec = JSON.parse(window.sessionStorage.getItem('currRec'))
             const messagesRef = collection(db, "messages");
-            
+            onSnapshot(messagesRef,orderBy("createdAt", "desc"), snapshot=>{
+              snapshot.forEach(doc=>{
+                console.log(doc.data())
+              })
+            })
             const q = query(messagesRef, orderBy("createdAt", "desc"));
             onSnapshot(q,snapshot=>{
               console.log(snapshot.docs)
