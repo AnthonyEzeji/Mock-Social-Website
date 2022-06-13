@@ -123,7 +123,7 @@ const [bool, setBool] = useState(false)
           const unsubscribe = await onSnapshot(q,snapshot=>{
               setMessages(snapshot.docs.sort(compareTime).filter(compareMessages).map(doc=>{return doc.data()})) 
           })
-        unsubscribe()
+        
       }
       
  
@@ -132,7 +132,7 @@ const [bool, setBool] = useState(false)
       getMessages()
     }
   }, [])
-
+console.log(messages)
   useEffect(() => {
 
      tempArr = []
@@ -153,7 +153,7 @@ const [bool, setBool] = useState(false)
           currUser = {}
           await axios.get(`https://3.92.186.223:5000/api/users/2/${id}`).then(res=>{
              currUser = res.data
-              
+              console.log(res.data)
           })
           messages.forEach(doc=>{
               
@@ -174,7 +174,7 @@ const [bool, setBool] = useState(false)
     }
   }, [messages])
   
-
+console.log(messagesList)
 
   async function handleMessageClick(e){
 for(var i = 0 ; i < messagesList.length;i++){
