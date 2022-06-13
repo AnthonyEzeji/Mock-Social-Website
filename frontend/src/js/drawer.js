@@ -71,13 +71,9 @@ console.log(session)
    
 
   
-
-  
-  useEffect(() => {
-      console.log(session)
       function compareFriends(currentElement){
-          
-          if(currentElement.data().user1 == session.user.userName  ){
+      console.log(JSON.parse(window.sessionStorage.getItem('session')))
+          if(currentElement.data().user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName  ){
               
               return true
           }else{
@@ -85,11 +81,13 @@ console.log(session)
               return false
           }
       }
+  
+  useEffect(() => {
  onSnapshot(collection(db,'friends'), snapshot=>{
   
       setFriends(snapshot.docs.filter(compareFriends).map(friend=>{
          
-          if(friend.data().user1 == session.user.userName ){
+          if(friend.data().user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName ){
             return friend.data().user2
           }else{
               return friend.data().user1
@@ -100,28 +98,28 @@ console.log(session)
   
    
   }, [session])
- 
-  React.useEffect(() => {
+  function compareMessages(currentElement){
+             console.log()
+    if(currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('session')).user.id||currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('session')).user.id){   
+        return true
+    }
+
+}
+function compareTime( a, b )
+{
+if ( a.createdAt < b.createdAt){
+  return -1;
+}
+if ( a.createdAt > b.createdAt){
+  return 1;
+}
+return 0;
+}
+ useEffect(() => {
     console.log(session)
       async function getMessages(){
        
-          function compareMessages(currentElement){
-             
-               if(currentElement.data().sentTo==session.user.id||currentElement.data().sentFrom==session.user.id){   
-                   return true
-               }
-           
-           }
-           function compareTime( a, b )
-           {
-           if ( a.createdAt < b.createdAt){
-             return -1;
-           }
-           if ( a.createdAt > b.createdAt){
-             return 1;
-           }
-           return 0;
-         }
+         
           var currRec = JSON.parse(window.sessionStorage.getItem('currRec'))
           const messagesRef = collection(db, "messages");
           
