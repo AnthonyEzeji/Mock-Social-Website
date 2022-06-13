@@ -38,6 +38,7 @@ ChatScreen() {
   }
   
   function compareMessages(currentElement){
+    console.log('here3')
     console.log(JSON.parse(window.sessionStorage.getItem('currRec')))
    console.log(JSON.parse(window.sessionStorage.getItem('session')))
    console.log(currentElement.data())
@@ -51,8 +52,9 @@ ChatScreen() {
     
     useEffect(() => {
       
-  
+  console.log('here')
         async function getMessages(){
+          console.log('here2')
             var currRec = JSON.parse(window.sessionStorage.getItem('currRec'))
             const messagesRef = collection(db, "messages");
             
@@ -75,13 +77,13 @@ ChatScreen() {
             
         }
      
-        return ()=>{
+      
             getMessages()
-        }
+        
 
     }, [params])
    
-
+console.log(messages)
  
 async function handleSendClick(){
     document.getElementById('chat-input').value =null
