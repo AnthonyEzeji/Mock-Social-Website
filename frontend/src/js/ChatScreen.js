@@ -26,31 +26,31 @@ ChatScreen() {
     }, []);
     
     const messagesRef2 = collection(db, "messages");
+    function compareTime( a, b )
+    {
+    if ( a.createdAt < b.createdAt){
+      return -1;
+    }
+    if ( a.createdAt > b.createdAt){
+      return 1;
+    }
+    return 0;
+  }
   
+  function compareMessages(currentElement){
+     var currRec = JSON.parse(window.sessionStorage.getItem('currRec'))
+   console.log(JSON.parse(window.sessionStorage.getItem('session')))
+      if((currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('session')).user.id&&currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('currRec')).id)||(currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('session')).user.id&&currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('currRec')).id)){   
+          return true
+      }
+     
+     
+  
+  }
     
     useEffect(() => {
       
-        function compareTime( a, b )
-  {
-  if ( a.createdAt < b.createdAt){
-    return -1;
-  }
-  if ( a.createdAt > b.createdAt){
-    return 1;
-  }
-  return 0;
-}
-
-function compareMessages(currentElement){
-   var currRec = JSON.parse(window.sessionStorage.getItem('currRec'))
- console.log(JSON.parse(window.sessionStorage.getItem('session')))
-    if((currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('session')).user.id&&currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('currRec')).id)||(currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('session')).user.id&&currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('currRec')).id)){   
-        return true
-    }
-   
-   
-
-}
+  
         async function getMessages(){
             var currRec = JSON.parse(window.sessionStorage.getItem('currRec'))
             const messagesRef = collection(db, "messages");
