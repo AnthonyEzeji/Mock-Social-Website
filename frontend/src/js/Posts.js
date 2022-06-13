@@ -183,15 +183,21 @@ function handleLikeClick(e){
 }
 const [bool, setBool] = useState(true)
 function handlePostSubmit(e){
-    
+    var doc = {}
     if(e.key == "Enter"){
-        e.preventDefault()
-        var postsRef = collection(db,'posts')
-        console.log(userFirestore.avatar)
+        
+        const q = query(collection(db,'users'), where("userName", "==", `${JSON.parse(window.sessionStorage.getItem('session')).user.userName}` ))
+        onSnapshot(q, async snapshot=>{
+           doc= snapshot.docs[0].data()
+            var postsRef = collection(db,'posts')
+        console.log(doc.avatar)
         console.log(JSON.parse(window.sessionStorage.getItem('session')).user.userName)
         console.log(e.target.value)
-        addDoc(postsRef, {text:e.target.value, userName:JSON.parse(window.sessionStorage.getItem('session')).user.userName,likes:[], createdAt:serverTimestamp(),avatar:userFirestore.avatar})
+        addDoc(postsRef, {text:e.target.value, userName:JSON.parse(window.sessionStorage.getItem('session')).user.userName,likes:[], createdAt:serverTimestamp(),avatar:doc.avatar})
         e.target.value = ""
+        })
+        e.preventDefault()
+       
         
     }
     
