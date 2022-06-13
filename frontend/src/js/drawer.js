@@ -16,7 +16,7 @@ import { useState, useEffect } from 'react';
 import '../css/drawer.css'
 import { db } from './Firebase';
 import axios from 'axios';
-import { ClickAwayListener, MenuItem, Select } from '@mui/material';
+import { ClickAwayListener, formControlClasses, MenuItem, Select } from '@mui/material';
 
 export default function TemporaryDrawer() {
   const [state, setState] = React.useState({
@@ -51,11 +51,14 @@ const [bool, setBool] = useState(false)
   var tempArr = []
   const [friends, setFriends] = useState([])
   var currUser = {}
+  const [session, setSession] = useState({})
 useEffect(() => {
   console.log('hello')
   console.log(JSON.parse(window.sessionStorage.getItem('session')))
-}, [])
+  setSession(JSON.parse(window.sessionStorage.getItem('session')))
 
+}, [])
+console.log(session)
       
       async function getCurrentFriendSelection(e){
           console.log(e.target.id)
@@ -71,10 +74,10 @@ useEffect(() => {
 
   
   useEffect(() => {
-      
+      console.log(session)
       function compareFriends(currentElement){
           
-          if(currentElement.data().user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName||currentElement.data().user2==JSON.parse(window.sessionStorage.getItem('session')).user.userName  ){
+          if(currentElement.data().user1 == session.user.userName  ){
               
               return true
           }else{
@@ -83,12 +86,10 @@ useEffect(() => {
           }
       }
  onSnapshot(collection(db,'friends'), snapshot=>{
-     snapshot.docs.forEach(doc=>{
-         
-     })
+  
       setFriends(snapshot.docs.filter(compareFriends).map(friend=>{
          
-          if(friend.data().user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName ){
+          if(friend.data().user1 == session.user.userName ){
             return friend.data().user2
           }else{
               return friend.data().user1
@@ -98,14 +99,15 @@ useEffect(() => {
   })
   
    
-  }, [])
+  }, [session])
  
   React.useEffect(() => {
+    console.log(session)
       async function getMessages(){
        
           function compareMessages(currentElement){
              
-               if(currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('session')).user.id||currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('session')).user.id){   
+               if(currentElement.data().sentTo==session.user.id||currentElement.data().sentFrom==session.user.id){   
                    return true
                }
            
@@ -135,7 +137,7 @@ useEffect(() => {
     return () => {
       getMessages()
     }
-  }, [])
+  }, [session])
 console.log(messages)
   useEffect(() => {
 
