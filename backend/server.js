@@ -39,4 +39,4 @@ const sslServer = https.createServer(
     },
     app
   )
-  sslServer.listen(PORT, () => console.log(`Secure server on port: ${PORT}`))
+ sslServer.listen(PORT, () => console.log(`Secure server running on port: ${PORT}`))
