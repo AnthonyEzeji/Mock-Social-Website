@@ -19,21 +19,27 @@ function Card() {
           await axios.get(`https://3.92.186.223:5000/api/users/1/${params._id}`).then(res=>{
             
             setUser(res.data)
-            const q = query(collection(db,'users'), where("userName", "==", `${res.data.userName}`))
+           
+            
+          })
+        
+        }
+        getCardInfo()
+    }, [params])
+    useEffect(() => {
+      console.log(user)
+      const q = query(collection(db,'users'), where("userName", "==", `${user.userName}`))
              onSnapshot(q,snapshot=>{
               snapshot.docs.forEach(doc=>{
                 
                 
-                 
+                 console.log(doc.data())
                 setUserFirestore(doc.data())
               })
             })
-            
-          })
-         
-        }
-        getCardInfo()
-    }, [params])
+    
+    }, [user])
+    
  
     function handleChange(){
       

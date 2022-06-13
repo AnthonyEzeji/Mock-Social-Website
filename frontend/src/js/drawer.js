@@ -204,7 +204,7 @@ for(var i = 0 ; i < messagesList.length;i++){
       <List>
         {messagesList.map((obj, index) => {
           
-         return( <ListItem key={obj.data[0].text} disablePadding>
+         return( <ListItem key={index} disablePadding>
             <ListItemButton className='message-item' id={obj.currUser.userName} onClick = {async(e)=>{
                 await axios.get(`https://3.92.186.223:5000/api/users/${e.target.id}`).then(res=>{
                     window.sessionStorage.setItem('currRec', JSON.stringify(res.data))
@@ -228,10 +228,10 @@ for(var i = 0 ; i < messagesList.length;i++){
                 
                 setCurrentFriendSelection(e.target.value)
             }}>
-                {friends.map(friend=>{
+                {friends.map((friend, index)=>{
                    
                     return(
-                        <MenuItem onClick={(e)=>{getCurrentFriendSelection(e)}} id={friend} value={friend}>{friend}</MenuItem>
+                        <MenuItem key= {index} onClick={(e)=>{getCurrentFriendSelection(e)}} id={friend} value={friend}>{friend}</MenuItem>
                     )
                 })}
             </Select>
@@ -258,7 +258,7 @@ function handleClickAway(){
           variant='persistent'
             anchor={'right'}
             open={bool}
-            onc
+           
             onClose={toggleDrawer('right', false)}
             
           >

@@ -43,7 +43,7 @@ ChatScreen() {
 
 function compareMessages(currentElement){
    var currRec = JSON.parse(window.sessionStorage.getItem('currRec'))
- 
+ console.log(JSON.parse(window.sessionStorage.getItem('session')))
     if((currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('session')).user.id&&currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('currRec')).id)||(currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('session')).user.id&&currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('currRec')).id)){   
         return true
     }
