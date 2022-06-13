@@ -123,6 +123,7 @@ const [bool, setBool] = useState(false)
           const unsubscribe = await onSnapshot(q,snapshot=>{
               setMessages(snapshot.docs.sort(compareTime).filter(compareMessages).map(doc=>{return doc.data()})) 
           })
+        unsubscribe()
       }
       
  
