@@ -51,6 +51,10 @@ const [bool, setBool] = useState(false)
   var tempArr = []
   const [friends, setFriends] = useState([])
   var currUser = {}
+useEffect(() => {
+  console.log('hello')
+  console.log(JSON.parse(window.sessionStorage.getItem('session')).user.userName||currentElement.data().user2==JSON.parse(window.sessionStorage.getItem('session')))
+}, [])
 
       
       async function getCurrentFriendSelection(e){
