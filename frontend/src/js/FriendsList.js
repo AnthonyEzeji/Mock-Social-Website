@@ -168,22 +168,23 @@ function FriendsList() {
                         console.log(friend)
                         if(friend.user2 == JSON.parse(window.sessionStorage.getItem('session')).user.userName){
                             if(friend.user1 != inputValue&&counter<1 ){
-                                console.log('hit')
+                                
                                 counter = counter+1
                                 const friendRequestsRef = collection(db, "friendRequests")
                                 addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
                             }else if(friend.user1==inputValue&& counter<1){
                                 counter = counter+1
-                                alert('account selected is already a friend')
+                                alert('account selected is already a friend1')
                             }
                         }else if(friend.user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName){
                             if(friend.user2 != inputValue&&counter<1 ){
+                                console.log(friend+inputValue+JSON.parse(window.sessionStorage.getItem('session')).user.userName)
                                 counter = counter+1
                                 const friendRequestsRef = collection(db, "friendRequests")
                                 addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
                             }else if(friend.user2 == inputValue&&counter<1 ){
                                 counter = counter+1
-                                alert('account selected is already a friend')
+                                alert('account selected is already a friend2')
                             }
     
                         }
@@ -191,7 +192,7 @@ function FriendsList() {
                         
                     })
                 }else{
-                    console.log('hello')
+                    
                     function compareRequest(currentElement){
                         if((currentElement.data().to == inputValue&&currentElement.data().from == JSON.parse(window.sessionStorage.getItem('session')).user.userName)||(currentElement.data().from== inputValue&&currentElement.data().to == JSON.parse(window.sessionStorage.getItem('session')).user.userName)){
                             return true
@@ -202,7 +203,7 @@ function FriendsList() {
                     onSnapshot(friendRequestsRef, snapshot=>{
                         snapshot.docs.filter(compareRequest).forEach(doc=>{
                             tempArr.push(doc)
-                            console.log(tempArr.length)
+                           
                         })
                         if(tempArr.length>0){
                             tempArr.forEach(request=>{
@@ -222,7 +223,7 @@ function FriendsList() {
                   
                    
                 }
-                console.log(friendsList)
+               
                 
 
             }
@@ -235,9 +236,9 @@ function FriendsList() {
         
 
     }
-    console.log(friendRequests)
+   
     function handleDeleteFriendClick(e){
-        console.log(e.target.id)
+   
     }
   return (
     <div className='friends-list'>

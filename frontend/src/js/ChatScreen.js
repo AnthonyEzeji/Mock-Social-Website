@@ -58,6 +58,7 @@ ChatScreen() {
             
             const q = query(messagesRef, orderBy("createdAt", "desc"));
             const unsubscribe = await onSnapshot(q,snapshot=>{
+              console.log(snapshot.docs)
                 setMessages(snapshot.docs.sort(compareTime).filter(compareMessages).map(doc=>{return doc.data()})) 
             })
             
