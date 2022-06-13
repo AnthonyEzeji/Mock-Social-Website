@@ -14,7 +14,7 @@ function Posts() {
     const [friendsList, setFriendsList] = useState([])
     const [userPosts, setUserPosts] = useState([])
     const [userFirestore, setUserFirestore] = useState({})
-    
+    const [inputValue, setInputValue] = useState('')
     var arr = []
 
     useEffect(() => {
@@ -187,6 +187,9 @@ function handlePostSubmit(e){
     if(e.key == "Enter"){
         e.preventDefault()
         var postsRef = collection(db,'posts')
+        console.log(userFirestore.avatar)
+        console.log(JSON.parse(window.sessionStorage.getItem('session')).user.userName)
+        console.log(e.target.value)
         addDoc(postsRef, {text:e.target.value, userName:JSON.parse(window.sessionStorage.getItem('session')).user.userName,likes:[], createdAt:serverTimestamp(),avatar:userFirestore.avatar})
         e.target.value = ""
         
@@ -206,6 +209,7 @@ console.log(bool)
        
         <TextareaAutosize
         id ="post-input"
+        onChange={(e)=>{setInputValue(e.target.value)}}
   aria-label="empty textarea"
   placeholder="Whats on your mind?"
   style={{ width: "98%", }}
