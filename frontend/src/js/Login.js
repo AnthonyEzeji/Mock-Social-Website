@@ -13,13 +13,13 @@ function Login() {
             if(window.sessionStorage.hasOwnProperty('session')){
                 if( window.sessionStorage.getItem('session')!=null){
                   await axios.post('https://3.92.186.223:5000/api/login', {userName : JSON.parse(window.sessionStorage.getItem('session')).user.userName, password:JSON.parse(window.sessionStorage.getItem('session')).user.password}).then(res=>{
-                    console.log(res.data)
+                  
                     if(res.data.isAuth){
                       
             window.sessionStorage.setItem('session', JSON.stringify(res.data));
             
                       
-                      console.log(res.data)
+                      
                       navigate(`/profile/${res.data.user._id}`)
                       
                        
@@ -39,7 +39,7 @@ function Login() {
       }, [])
     const [credentials, setCredentials] = useState({userName:'',password:''})
 useEffect(() => {
-  console.log(credentials)
+
 }, [credentials]);
   function handleUserNameChange(e){
       setCredentials({userName:e.target.value,password:credentials.password})
@@ -49,11 +49,11 @@ useEffect(() => {
 }
     async function handleLoginClick(e){
 await axios.post('https://3.92.186.223:5000/api/login',credentials).then(res=>{
-    console.log(res.data)
+    
     if(res.data.hasOwnProperty('isAuth')){
         if(res.data.isAuth){
             window.sessionStorage.setItem('session',JSON.stringify(res.data))
-            console.log(JSON.parse(window.sessionStorage.getItem('session')).user._id)
+           
             redirect(`/profile/${JSON.parse(window.sessionStorage.getItem('session')).user._id}`)
         }
     }else if(res.data.hasOwnProperty('message')){

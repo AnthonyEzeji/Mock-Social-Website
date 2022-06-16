@@ -1,12 +1,13 @@
-import { Autocomplete, Button, colors, Input, TextField } from '@mui/material'
+import { Autocomplete, Avatar, Button, colors, Input, TextField } from '@mui/material'
 import axios from 'axios'
-import { doc,addDoc, collection, deleteDoc, getDoc, onSnapshot, serverTimestamp } from 'firebase/firestore'
+import { doc,addDoc, collection, deleteDoc, getDoc, onSnapshot, serverTimestamp, query, where } from 'firebase/firestore'
+import { getDownloadURL, ref } from 'firebase/storage'
 
 import React, { useEffect, useState } from 'react'
 import { useRedirect } from 'react-admin'
 import { useNavigate, useParams } from 'react-router'
 import '../css/FriendsList.css'
-import { db } from './Firebase'
+import { db, storage } from './Firebase'
 
 function FriendsList() {
     const [friendRequests, setFriendRequests] = useState([])
@@ -17,23 +18,26 @@ function FriendsList() {
   const [users, setUsers] = useState([])
     var arr = []
     var user = {}
-
+    const [friendsListToDisplay, setFriendsListToDisplay] = useState([])
     var navigate = useNavigate()
     const [friendsList, setFriendsList] = useState([])
+   
     const [friendRequestsToDisplay, setFriendRequestsToDisplay] = useState([])
     const [value, setValue] = React.useState();
   const [inputValue, setInputValue] = React.useState('');
+  const [friendsFirestore, setFriendsFirestore] = useState([])
+
     useEffect(() => {
         function compareId(currentElement){
-            console.log(currentElement.data())
+          
             if(currentElement.data().from ==JSON.parse(window.sessionStorage.getItem('session')).user.userName||currentElement.data().to ==JSON.parse(window.sessionStorage.getItem('session')).user.userName){
-                console.log(true)
+       
                 return true
             }
         }
         
       onSnapshot(collection(db,'friendRequests'),snapshot=>{
-          console.log(snapshot.docs)
+         
            setFriendRequests(snapshot.docs.filter(compareId).map(doc=>{return doc.data()}))
          
       })
@@ -42,11 +46,11 @@ function FriendsList() {
       
       }
     }, [])
-    console.log(friendRequests)
+ 
     useEffect(() => {
         
         
-        async function getFriends(){
+        
             
             const friendsRef = collection(db, 'friends')
           const unsub = onSnapshot(friendsRef,snapshot=>{
@@ -54,36 +58,88 @@ function FriendsList() {
               snapshot.docs.forEach(doc=>{
                   
                   if(doc.data().user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName||doc.data().user2 == JSON.parse(window.sessionStorage.getItem('session')).user.userName){
-                    arr.push(doc.data())
+                    if(doc.data().user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName){
+                      arr.push(doc.data().user2)
+                    }else if(doc.data().user2 == JSON.parse(window.sessionStorage.getItem('session')).user.userName){
+                       arr.push(doc.data().user1)
+                    }
+                  
                     
                   }
               })
-              unsub()
+              
               
               setFriendsList(arr)
           })
+         
           
           
+        return ()=>{
+unsub()
         }
-        getFriends()
+       
         }, [params])
+
+     
+        
+       
+       useEffect(() => {
+       
+        var url = ""
+        async function getFriendsFirestore(){
+            var arr4 = []
+            friendsList.forEach(friend=>{
+                console.log(friend)
+                const q = query(collection(db,'users'), where("userName", '==', friend))
+                onSnapshot(q,async snapshot=>{
+                    var tempUserInfo = snapshot.docs[0].data()
+                    await arr4.push(tempUserInfo)
+                    console.log(tempUserInfo)
+                    console.log(arr4)
+                    if(arr4.length == friendsList.length){
+                        setFriendsFirestore(arr4.map((friend)=>{
+                            return friend
+                        }))
+                    }
+                })
+               
+            })
+            
+                
+        }
+        getFriendsFirestore()
+          }, [friendsList])
+         
+          console.log(friendsFirestore)
         useEffect(() => {
+            var arr5 =[]
+            friendsFirestore.forEach(async(friend)=>{
+               const url = await getDownloadURL( ref(storage,`${friend.avatar}`))
+                arr5.push({friend,avatar:url})
+                if(arr5.length==friendsFirestore.length){
+                    setFriendsListToDisplay(arr5.map(friend=>{
+                        return friend
+                    }))
+                }
+            })
+            
+        }, [friendsFirestore])
         
-        }, [])
-        
+
+console.log(friendsListToDisplay)
         useEffect(() => {
           var tempArr = []
             friendRequests.forEach(async  (request)=>{
-                console.log(request)
+              
                 
                if(request.to ==  JSON.parse(window.sessionStorage.getItem('session')).user.userName){
-                 await axios.get(`https://3.92.186.223:5000/api/users/2/${request.from}`).then(res=>{
+                 await axios.get(`http://localhost:5000/api/users/2/${request.from}`).then(res=>{
                     tempArr.push({request,user:res.data}) 
                    
                 })
                    
                }else{
-                await axios.get(`https://3.92.186.223:5000/api/users/2/${request.to}`).then(res=>{
+                await axios.get(`http://localhost:5000/api/users/2/${request.to}`).then(res=>{
                     tempArr.push({request,user:res.data}) 
                     
                 })
@@ -95,17 +151,17 @@ function FriendsList() {
             
           }
         }, [friendRequests])
-        console.log(friendRequestsToDisplay)
+        
     async function handleFriendClick(e){
 
-        await axios.get(`https://3.92.186.223:5000/api/users/${e.target.parentNode.parentNode.firstChild.innerText}`).then(res=>{
+        await axios.get(`http://localhost:5000/api/users/${e.target.parentNode.parentNode.firstChild.innerText}`).then(res=>{
             navigate(`/profile/${res.data._id}`)
         })
        
     }
     async function onAcceptClick(e){
-        console.log(e.target.id)
-        console.log(JSON.parse(window.sessionStorage.getItem('session')).user.userName)
+   
+       
         const friendsRef = collection(db, "friends")
         await addDoc(friendsRef, {user1:JSON.parse(window.sessionStorage.getItem('session')).user.userName, user2:e.target.id, createdAt:serverTimestamp()})
         const friendRequestRef = collection(db, "friendRequests")
@@ -125,8 +181,8 @@ function FriendsList() {
         
     }
     function onDeclineClick(e){
-        console.log(e.target.id)
-        console.log(JSON.parse(window.sessionStorage.getItem('session')).user.userName)
+      
+       
         const friendRequestRef = collection(db, "friendRequests")
         var docToGet = {}
         onSnapshot(friendRequestRef, snapshot=>{
@@ -151,83 +207,81 @@ function FriendsList() {
         
       }
     }, [])
+
+    
   const [bool, setBool] = useState(true);
-    function handleAddClick(e){
-        setBool(true)
-        var counter = 0;
-        var counter2 = 0
+
+
+
+  function compareRequest(currentElement){
+    if((currentElement.data().to == inputValue&&currentElement.data().from == JSON.parse(window.sessionStorage.getItem('session')).user.userName)||(currentElement.data().from== inputValue&&currentElement.data().to == JSON.parse(window.sessionStorage.getItem('session')).user.userName)){
+        return true
+
+    }else{return false}
+}
+    async function handleAddClick(e){
+        var counter =0
+        var boolean = true
+        
         var tempArr = []
         if(inputValue.length>0){
-            
-            if(inputValue ==JSON.parse(window.sessionStorage.getItem('session')).user.userName  ){
-                alert("Cannot add yourself as a friend! Try again!")
-            }
-            else{
-                if(friendsList.length>0){
-                    friendsList.forEach(friend=>{
-                        console.log(friend)
-                        if(friend.user2 == JSON.parse(window.sessionStorage.getItem('session')).user.userName){
-                            if(friend.user1 != inputValue&&counter<1 ){
-                                
-                                counter = counter+1
-                                const friendRequestsRef = collection(db, "friendRequests")
-                                addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
-                            }else if(friend.user1==inputValue&& counter<1){
-                                counter = counter+1
-                                alert('account selected is already a friend1')
-                            }
-                        }else if(friend.user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName){
-                            if(friend.user2 != inputValue&&counter<1 ){
-                                console.log(friend+inputValue+JSON.parse(window.sessionStorage.getItem('session')).user.userName)
-                                counter = counter+1
-                                const friendRequestsRef = collection(db, "friendRequests")
-                                addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
-                            }else if(friend.user2 == inputValue&&counter<1 ){
-                                counter = counter+1
-                                alert('account selected is already a friend2')
-                            }
-    
-                        }
-                        
-                        
-                    })
-                }else{
-                    
-                    function compareRequest(currentElement){
-                        if((currentElement.data().to == inputValue&&currentElement.data().from == JSON.parse(window.sessionStorage.getItem('session')).user.userName)||(currentElement.data().from== inputValue&&currentElement.data().to == JSON.parse(window.sessionStorage.getItem('session')).user.userName)){
-                            return true
-
-                        }else{return false}
-                    }
-                    const friendRequestsRef = collection(db, "friendRequests")
-                    onSnapshot(friendRequestsRef, snapshot=>{
-                        snapshot.docs.filter(compareRequest).forEach(doc=>{
-                            tempArr.push(doc)
-                           
-                        })
-                        if(tempArr.length>0){
-                            tempArr.forEach(request=>{
-                                
-                                if((request.data().to == inputValue && request.data().from ==JSON.parse(window.sessionStorage.getItem('session')).user.userName )||(request.data().from == inputValue && request.data().to ==JSON.parse(window.sessionStorage.getItem('session')).user.userName )){
-                                    return 
-                                }else{
-                                    addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
-                                }
-                            })
-                        }else{
-                            addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
-                        }
-                    
-                    })
-                    
-                  
-                   
-                }
-               
+            if(friendsList.length == 0 && friendRequests.length == 0){
+                const friendRequestsRef = collection(db, "friendRequests")
+                console.log('boob3')
+                await addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
+            }else if(friendsList.length != 0 && friendRequests.length == 0){
                 
+                friendsList.forEach(friend=>{
+               console.log(counter)
+                    console.log(friend)
+                    
+                        console.log(inputValue)
+                        if(friend == inputValue ){
+                            boolean = false
+                          
+                         
+                        }else{
+                            boolean = boolean
+                        }
+                    
+                    
+                    
+                })
+                if(boolean){
+                    
+                        const friendRequestsRef = collection(db, "friendRequests")
+                        console.log(counter)
+                         counter=counter+1
+                         console.log('boob2')
+                         console.log(3)
+                          addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
+                    
+                }
+
+            }else if(friendRequests!=0 && friendsList.length == 0){
+                friendRequests.forEach(request=>{
+                    if((request.to == inputValue && request.from ==JSON.parse(window.sessionStorage.getItem('session')).user.userName )||(request.from == inputValue && request.to ==JSON.parse(window.sessionStorage.getItem('session')).user.userName )){         
+                        if(counter<1){
+                            counter=counter+1
+                           alert('request already sent')
+                     
+                        }else{
+                            return
+                        }
+                        
+                    }else {
+                        if(counter<1){
+                            
+                            counter=counter+1
+                            const friendRequestsRef = collection(db, "friendRequests")
+                            addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
+                        }else{return}
+                       
+                    }
+                })
 
             }
-           
+        
         }
         else{
             return false
@@ -238,6 +292,10 @@ function FriendsList() {
     }
    
     function handleDeleteFriendClick(e){
+        console.log(e.target.id)
+        console.log(JSON.parse(window.sessionStorage.getItem('session')).user.userName)
+        const friendsRef = collection(db, "friends")
+       
    
     }
   return (
@@ -279,24 +337,18 @@ function FriendsList() {
                 }
                 
             }):<></>}
-        {friendsList.map((friend,index)=>{
-            if(friend.user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName ){
-                return(<li key={index} className='friends-list-item'>
-                <p>{friend.user2}</p>
-                <div> <Button style={{color:"black",backgroundColor:'grey', margin:5}} onClick = {(e)=>handleFriendClick(e)}>Profile</Button>
-                <Button style={{color:"black",backgroundColor:'red', margin:5}} id={friend.user2} onClick={(e)=>handleDeleteFriendClick(e)}>Delete</Button></div>
-               
-            </li>)
-            }else{
-                return(<li key={index} onClick = {(e)=>handleFriendClick(e)}className='friends-list-item'>
-                <p>{friend.user1}</p>
-                <div>
-                    <Button style={{color:"black",backgroundColor:'grey', margin:5}} onClick = {(e)=>handleFriendClick(e)}>Profile</Button>
-                <Button style={{color:"black",backgroundColor:'red', margin:5}} id={friend.user1} onClick={(e)=>handleDeleteFriendClick(e)}>Delete</Button></div>
+        {friendsListToDisplay.map((obj,index)=>{
+            return(<li key={index} className='friends-list-item'>
+                <div style = {{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:'center',marginTop:5}}>
+                    <Avatar style ={{marginRight:5}} src = {obj.avatar}></Avatar>
+                <p>{obj.friend.userName}</p>
                 
-            </li>)
-            }
+                </div>
+            
+            <div> <Button style={{color:"black",backgroundColor:'grey', margin:5}} onClick = {(e)=>handleFriendClick(e)}>Profile</Button>
+            <Button style={{color:"black",backgroundColor:'red', margin:5}} id={obj.friend} onClick={(e)=>handleDeleteFriendClick(e)}>Delete</Button></div>
            
+        </li>)
         })}
         </ul>
 

@@ -3,15 +3,16 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import Drawer from './drawer'
 import '../css/NavBar.css'
-import { db } from './Firebase'
+import { db, storage } from './Firebase'
 import { collection, onSnapshot, query, where } from 'firebase/firestore'
+import { getDownloadURL, ref } from 'firebase/storage'
 function NavBar() {
   const [userFirestore, setUserFirestore] = useState({})
   useEffect(() => {
     async function getSesisonUserInfo(){
         const q = query(collection(db,'users'), where("userName", "==", `${JSON.parse(window.sessionStorage.getItem('session')).user.userName}` ))
           onSnapshot(q,snapshot=>{
-              console.log(snapshot.docs)
+              
               snapshot.forEach(doc=>{
                   setUserFirestore(doc.data())
               })
@@ -25,6 +26,23 @@ function NavBar() {
     getSesisonUserInfo()
   }
 }, [])
+const [avatar, setAvatar] = useState('')
+useEffect(() => {
+  try {
+    async function getUserFirestore(){
+      const imageRef = ref(storage,`${userFirestore.avatar}`)
+  
+  
+      var promise = await getDownloadURL(imageRef)
+      setAvatar(promise)
+    }
+  getUserFirestore()
+  } catch (error) {
+    console.log(error)
+  }
+  
+
+}, [userFirestore]);
   var navigate = useNavigate()
   function handleLogoutClick(){
       window.sessionStorage.setItem('session',null)
@@ -41,7 +59,7 @@ function NavBar() {
     <div className='navbar'>
          <Drawer></Drawer>
         <Button onClick={handleLogoutClick} id= 'navbar-btn'>Log Out</Button>
-        <Button onClick={handleProfileClick} id= 'navbar-btn'><Avatar src={userFirestore.avatar}></Avatar></Button>
+        <Button onClick={handleProfileClick} id= 'navbar-btn'><Avatar src={avatar}></Avatar></Button>
        
     </div>
   )

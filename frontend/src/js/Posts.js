@@ -1,40 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import {doc,documentId,FieldPath,query,collection,onSnapshot, orderBy, updateDoc, increment, where, setDoc, serverTimestamp, addDoc, getDoc} from 'firebase/firestore'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import {db} from './Firebase'
+import {db, storage} from './Firebase'
 
 import '../css/Posts.css'
 import { Button, Input, TextareaAutosize } from '@mui/material';
 import Post from './Post';
 import axios from 'axios';
-import { useParams } from 'react-router';
-import { RefreshButton, useRefresh } from 'react-admin';
+
+import { Navigate, useNavigate, useParams } from 'react-router';
+
+import { getDownloadURL, ref } from 'firebase/storage';
+import { Link, NavLink } from 'react-router-dom';
+
 function Posts() {
     var params = useParams()
     const [friendsList, setFriendsList] = useState([])
     const [userPosts, setUserPosts] = useState([])
-    const [userFirestore, setUserFirestore] = useState({})
+    const [userFirestore, setUserFirestore] = useState([])
+    const [usersFirestore2, setUsersFirestore2] = useState([])
     const [inputValue, setInputValue] = useState('')
+    const [posts, setPosts] = useState([])
     var arr = []
 
-    useEffect(() => {
-        async function getSesisonUserInfo(){
-            const q = query(collection(db,'users'), where("userName", "==", `${JSON.parse(window.sessionStorage.getItem('session')).user.userName}` ))
-              onSnapshot(q,snapshot=>{
-                  console.log(snapshot.docs)
-                  snapshot.forEach(doc=>{
-                      setUserFirestore(doc.data())
-                  })
-              })
-             
-        }
-       
 
-    
-      return () => {
-        getSesisonUserInfo()
-      }
-    }, [])
     
     useEffect(() => {
         
@@ -46,7 +35,7 @@ function Posts() {
          
              
               snapshot.docs.forEach(doc=>{
-               console.log(doc.data())
+          console.log(doc.data())
                   if(doc.data().user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName){
                   
                     const q = query(collection(db,'users'), where("userName", "==", `${doc.data().user2}`))
@@ -56,6 +45,7 @@ function Posts() {
                         snapshot.forEach(doc=>{
                             
                             arr.push(doc.data())
+                            console.log(arr)
                         })
                     })
                    
@@ -71,7 +61,7 @@ function Posts() {
                   }
               })
               
-            console.log(arr)
+            
               setFriendsList(arr)
           })
          
@@ -82,83 +72,57 @@ function Posts() {
        
         }, [params])
        
-        useEffect(() => {
-            console.log(friendsList)
-            async function getFriendsList(){
-             friendsList.forEach(async friend=>{
-                 const q = query(collection(db,'users'), where("userName", "==", `${friend}`))
-                await onSnapshot(q,snapshot=>{
-                    console.log(snapshot.docs)
-                   snapshot.docs.forEach(doc=>{
-                     setUserFirestore(doc.data())
-                   })
-                 })
-             })
-     
-             }
-            
-             
-             return () => {
-                 getFriendsList()
-             };
-         }, [friendsList]);
+        console.log(friendsList)
         
-    const [posts, setPosts] = useState([])
+        function compareDoc(currentElement){
+            var bool = false
+            friendsList.forEach(friend=>{
+                if(friend.userName == currentElement.data().user.userName){
+                    bool = true
+                }
+            })
+            
+      return bool
+        }
+        
+        function sortCreatedAt(first, second) {
+        
+          if (first.data().createdAt > second.data().createdAt) {
+             return -1;
+          }
+          if (first.data().createdAt < second.data().createdAt) {
+             return 1;
+          }
+          return 0;
+       }
     useEffect(() => {
         
         var arr2 = []
         var arr3= []
-    function compareId(currentElement){
-        
-        if(currentElement!=null){
-            if(currentElement.data().userId == JSON.parse(window.sessionStorage.getItem('session')).user.id){
-                return true
-            }
-        }
-    }
+
     var postsRef = collection(db,'posts')
    
-  function compareDoc(currentElement){
-      var bool = false
-      friendsList.forEach(friend=>{
-          if(friend.userName == currentElement.data().userName){
-              bool = true
-          }
-      })
-      
-return bool
-  }
-  
-  function sortCreatedAt(first, second) {
-      console.log(first+second)
-    if (first.data().createdAt > second.data().createdAt) {
-       return -1;
-    }
-    if (first.data().createdAt < second.data().createdAt) {
-       return 1;
-    }
-    return 0;
- }
-        var unsubscribe = onSnapshot(postsRef, snapshot=>{
-            var tempArr = []
-           tempArr = snapshot.docs.filter((currentElement)=>{
-               
-          if(currentElement.data().userName == JSON.parse(window.sessionStorage.getItem('session')).user.userName ){
-              return true
-          }else{
-              return compareDoc(currentElement)
-          }
-               
-              
-               
-            }).sort(sortCreatedAt).map(doc=>{
-                return{id:doc.id,data:doc.data()}
-            })
+ 
+        const unsubscribe = onSnapshot(postsRef, snapshot=>{
+           
+           
             
                 
                     
              
-               setPosts(tempArr)
+               setPosts( snapshot.docs.filter((currentElement)=>{
+                console.log(snapshot.docs)
+           if(currentElement.data().user.userName == JSON.parse(window.sessionStorage.getItem('session')).user.userName ){
+               return true
+           }else{
+               return compareDoc(currentElement)
+           }
+                
+               
+                
+             }).sort(sortCreatedAt).map(doc=>{
+                 return{id:doc.id,data:doc.data()}
+             }))
     
             })
        
@@ -171,41 +135,58 @@ return bool
         unsubscribe()
       }
     }, [friendsList])
-  
+
+    const [postsToDisplay, setPostsToDisplay] = useState([])
+useEffect(() => {
+setPostsToDisplay(posts)
+}, [posts])
+
+
  
-    
+ useEffect(() => {
+ async function getUserFirestore(){
+    const q = query(collection(db,'users'), where('userName', "==",JSON.parse(window.sessionStorage.getItem('session')).user.userName ))
+    onSnapshot(q, snapshot=>{
+        setUserFirestore(snapshot.docs[0].data())
+    })
+ }
+ getUserFirestore()
+ }, [])
+ console.log(userFirestore)
+
+
+
 function handleLikeClick(e){
-    console.log(e.target.id)
+   
     var postsRef = collection(db,"posts")
     var ref = doc(postsRef,e.target.id)
     
     updateDoc(ref,{"likes":increment(1)})
 }
 const [bool, setBool] = useState(true)
-function handlePostSubmit(e){
+
+async function handlePostSubmit(e){
     var doc = {}
     if(e.key == "Enter"){
         
-        const q = query(collection(db,'users'), where("userName", "==", `${JSON.parse(window.sessionStorage.getItem('session')).user.userName}` ))
-        onSnapshot(q, async snapshot=>{
-           doc= snapshot.docs[0].data()
-            var postsRef = collection(db,'posts')
-        console.log(doc.avatar)
-        console.log(JSON.parse(window.sessionStorage.getItem('session')).user.userName)
-        console.log(e.target.value)
-        addDoc(postsRef, {text:e.target.value, userName:JSON.parse(window.sessionStorage.getItem('session')).user.userName,likes:[], createdAt:serverTimestamp(),avatar:doc.avatar})
-        e.target.value = ""
+        const promise = await getDownloadURL(ref(storage, `${userFirestore.avatar}`)).then(url=>{
+            const postsRef = collection(db,'posts')
+            addDoc(postsRef, {text:e.target.value, likes:[], createdAt:serverTimestamp(),user:userFirestore, avatar:url})
+            e.target.value = ""
         })
-        e.preventDefault()
-       
         
+        
+       
+     
+      
+      
     }
     
-  
+ 
 }
-useEffect(() => {
-console.log(bool)
-}, [bool])
+
+
+
 
 
   return (
@@ -222,9 +203,11 @@ console.log(bool)
   onKeyDown={(e)=>handlePostSubmit(e)}
 />
            
-            {posts.map((post,index)=>{
+            {postsToDisplay.map((post,index)=>{
+              
+                    return(<Post  key= {index} props = {{post,index}}></Post>)
                 
-            return(<Post  key= {index}props = {{post,index,friendsList,userFirestore}}></Post>)
+           
         })}
             </ul>
     </div>

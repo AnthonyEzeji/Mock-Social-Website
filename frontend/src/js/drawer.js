@@ -53,18 +53,17 @@ const [bool, setBool] = useState(false)
   var currUser = {}
   const [session, setSession] = useState({})
 useEffect(() => {
-  console.log('hello')
-  console.log(JSON.parse(window.sessionStorage.getItem('session')))
+  
   setSession(JSON.parse(window.sessionStorage.getItem('session')))
 
 }, [])
-console.log(session)
+
       
       async function getCurrentFriendSelection(e){
-          console.log(e.target.id)
+          
           await axios.get(`https://3.92.186.223:5000/api/users/${e.target.id}`).then(res=>{
               window.sessionStorage.setItem('currRec',JSON.stringify(res.data))
-              console.log(res.data)
+            
           })
           navigate(`/chat/${e.target.id}`)
       }
@@ -72,7 +71,7 @@ console.log(session)
 
   
       function compareFriends(currentElement){
-      console.log(JSON.parse(window.sessionStorage.getItem('session')))
+   
           if(currentElement.data().user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName ||currentElement.data().user2 == JSON.parse(window.sessionStorage.getItem('session')).user.userName  ){
               
               return true
@@ -99,7 +98,7 @@ console.log(session)
    
   }, [session])
   function compareMessages(currentElement){
-             console.log()
+           
     if(currentElement.data().sentTo==JSON.parse(window.sessionStorage.getItem('session')).user.id||currentElement.data().sentFrom==JSON.parse(window.sessionStorage.getItem('session')).user.id){   
         return true
     }
@@ -116,7 +115,7 @@ if ( a.createdAt > b.createdAt){
 return 0;
 }
  useEffect(() => {
-    console.log(session)
+   
       async function getMessages(){
        
          
@@ -136,7 +135,7 @@ return 0;
       getMessages()
     }
   }, [session])
-console.log(messages)
+
   useEffect(() => {
 
      tempArr = []
@@ -157,7 +156,7 @@ console.log(messages)
           currUser = {}
           await axios.get(`https://3.92.186.223:5000/api/users/2/${id}`).then(res=>{
              currUser = res.data
-              console.log(res.data)
+            
           })
           messages.forEach(doc=>{
               
@@ -178,7 +177,7 @@ console.log(messages)
     }
   }, [messages])
   
-console.log(messagesList)
+
 
   async function handleMessageClick(e){
 for(var i = 0 ; i < messagesList.length;i++){
@@ -249,7 +248,7 @@ for(var i = 0 ; i < messagesList.length;i++){
     </ClickAwayListener>
   );
 function handleClickAway(){
-    console.log(bool+"click away")
+
     setBool(false)
 }
   return (
