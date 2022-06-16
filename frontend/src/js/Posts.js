@@ -97,43 +97,45 @@ function Posts() {
        }
     useEffect(() => {
         
-        var arr2 = []
-        var arr3= []
-
-    var postsRef = collection(db,'posts')
+     
    
- 
-        const unsubscribe = onSnapshot(postsRef, snapshot=>{
+ async function getPosts(){
+    var arr2 = []
+    var arr3= []
+
+var postsRef = collection(db,'posts')
+    const unsubscribe = onSnapshot(postsRef, async snapshot=>{
            
            
             
                 
                     
              
-               setPosts( snapshot.docs.filter((currentElement)=>{
-                console.log(snapshot.docs)
-           if(currentElement.data().user.userName == JSON.parse(window.sessionStorage.getItem('session')).user.userName ){
-               return true
-           }else{
-               return compareDoc(currentElement)
-           }
-                
-               
-                
-             }).sort(sortCreatedAt).map(doc=>{
-                 return{id:doc.id,data:doc.data()}
-             }))
-    
-            })
-       
+        setPosts( snapshot.docs.filter((currentElement)=>{
+         console.log(snapshot.docs)
+    if(currentElement.data().user.userName == JSON.parse(window.sessionStorage.getItem('session')).user.userName ){
+        return true
+    }else{
+        return compareDoc(currentElement)
+    }
+         
         
-   
-  
+         
+      }).sort(sortCreatedAt).map(doc=>{
+          return{id:doc.id,data:doc.data()}
+      }))
+
+     })
+
+ 
+
+
+
+ }
+      
     
 
-      return () => {
-        unsubscribe()
-      }
+   getPosts()
     }, [friendsList])
 
     const [postsToDisplay, setPostsToDisplay] = useState([])
