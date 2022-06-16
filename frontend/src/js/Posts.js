@@ -168,12 +168,20 @@ const [bool, setBool] = useState(true)
 async function handlePostSubmit(e){
     var doc = {}
     if(e.key == "Enter"){
-        
-        const promise = await getDownloadURL(ref(storage, `${userFirestore.avatar}`)).then(url=>{
-            const postsRef = collection(db,'posts')
-            addDoc(postsRef, {text:e.target.value, likes:[], createdAt:serverTimestamp(),user:userFirestore, avatar:url})
-            e.target.value = ""
-        })
+        if(userFirestore.avatar.length>0){
+            const promise = await getDownloadURL(ref(storage, `${userFirestore.avatar}`)).then(url=>{
+                const postsRef = collection(db,'posts')
+                addDoc(postsRef, {text:e.target.value, likes:[], createdAt:serverTimestamp(),user:userFirestore, avatar:url})
+                e.target.value = ""
+            })
+        }else{
+           
+                const postsRef = collection(db,'posts')
+                addDoc(postsRef, {text:e.target.value, likes:[], createdAt:serverTimestamp(),user:userFirestore, avatar:''})
+                e.target.value = ""
+            
+        }
+       
         
         
        

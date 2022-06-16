@@ -114,13 +114,24 @@ unsub()
         useEffect(() => {
             var arr5 =[]
             friendsFirestore.forEach(async(friend)=>{
-               const url = await getDownloadURL( ref(storage,`${friend.avatar}`))
-                arr5.push({friend,avatar:url})
-                if(arr5.length==friendsFirestore.length){
-                    setFriendsListToDisplay(arr5.map(friend=>{
-                        return friend
-                    }))
+                if(friend.avatar.length>0){
+                    const url = await getDownloadURL( ref(storage,`${friend.avatar}`))
+                    arr5.push({friend,avatar:url})
+                    if(arr5.length==friendsFirestore.length){
+                        setFriendsListToDisplay(arr5.map(friend=>{
+                            return friend
+                        }))
+                    }
+                }else{
+                  
+                    arr5.push({friend,avatar:""})
+                    if(arr5.length==friendsFirestore.length){
+                        setFriendsListToDisplay(arr5.map(friend=>{
+                            return friend
+                        }))
+                    }
                 }
+              
             })
             
         }, [friendsFirestore])
