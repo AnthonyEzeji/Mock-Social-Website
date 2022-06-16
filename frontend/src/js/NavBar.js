@@ -13,9 +13,9 @@ function NavBar() {
         const q = query(collection(db,'users'), where("userName", "==", `${JSON.parse(window.sessionStorage.getItem('session')).user.userName}` ))
           onSnapshot(q,snapshot=>{
               
-              snapshot.forEach(doc=>{
-                  setUserFirestore(doc.data())
-              })
+             
+                  setUserFirestore( snapshot.docs[0].data())
+              
           })
          
     }
