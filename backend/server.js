@@ -32,11 +32,5 @@ app.use('/api/users',UserRoutes)
 
 
 app.use('/api/login',LoginRoutes)
-const sslServer = https.createServer(
-    {
-      key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
-      cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem')),
-    },
-    app
-  )
- sslServer.listen(PORT, () => console.log(`Secure server running on port: ${PORT}`))
+
+ app.listen(PORT, () => console.log(`Secure server running on port: ${PORT}`))
