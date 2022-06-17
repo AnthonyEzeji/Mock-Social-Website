@@ -39,7 +39,7 @@ function Register() {
                                     
                                     if(userName.length!=0){
                                         
-                                        await axios.post(`https://3.92.186.223:5000/api/users/`, {userName,password}).then(res=>{
+                                        await axios.post(`http://3.92.186.223:5000/api/users/`, {userName,password}).then(res=>{
                                
                                             if(res.data.hasOwnProperty('message')){
                                                 console.log(res.data.message)

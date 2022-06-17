@@ -19,7 +19,7 @@ function Card() {
       console.log(params._id)
         async function getCardInfo(){
           var obj ={}
-          await axios.get(`https://3.92.186.223:5000/api/users/1/${params._id}`).then(res=>{
+          await axios.get(`http://3.92.186.223:5000/api/users/1/${params._id}`).then(res=>{
             console.log(res.data)
             setUser(res.data)
            
