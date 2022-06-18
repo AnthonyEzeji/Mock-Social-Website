@@ -25,23 +25,7 @@ useEffect(() => {
 
     const [avatar, setAvatar] = useState("")
     
-    useEffect(() => {
-     async function getAvatar(){
-        
-            const imageRef = ref(storage,`${props.props.post.data.user.avatar}`)
-                
-            
-            const promise = await getDownloadURL(imageRef).then(url=>{
-                console.log(url)
-             setAvatar(url)
-            })
-     
- 
-   }
-      getAvatar()
     
-        }, []);
-
     
     
     async function handleLikeClick(e){

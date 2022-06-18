@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { addDoc, collection, doc, getDoc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import {storage} from "./Firebase"
-import {getMetadata, ref, uploadBytes} from 'firebase/storage'
+import {getDownloadURL, getMetadata, ref, uploadBytes} from 'firebase/storage'
 import {v4} from "uuid"
 import React,{Component, useEffect, useState} from 'react';
 import { db } from './Firebase';
@@ -12,19 +12,31 @@ function FilePicker() {
     async function setAvatar(data){
         var imagePath = `images/${data.selectedFileName+v4()}`
         const imageRef = ref(storage,imagePath )
-        uploadBytes(imageRef, data.selectedFile)
+        const result= await uploadBytes(imageRef, data.selectedFile)
+          const q = query(collection(db,'users'), where("userName", "==", JSON.parse(window.sessionStorage.getItem('session')).user.userName))
+          onSnapshot(q,snapshot=>{
+            const imageRef = ref(storage,result.metadata.fullPath)
+              snapshot.docs.forEach(async doc1=>{
+                console.log(doc1.data())
+                  var docRef = doc(collection(db,"users"),doc1.id)
+                  console.log(docRef)
+                  await getDownloadURL(imageRef).then(url=>{
+                    for(var i = 0 ; i < 1; i ++){
+                      console.log(url)
+                      updateDoc(docRef,{avatar:url})
+                    }
+                  
+                  })
+                  
+                  
+              })
+  
+          })
+        
        
         
        
-        const q = query(collection(db,'users'), where("userName", "==", JSON.parse(window.sessionStorage.getItem('session')).user.userName))
-        onSnapshot(q,snapshot=>{
-            snapshot.docs.forEach(doc1=>{
-                var docRef = doc(collection(db,"users"),doc1.id)
-                updateDoc(docRef,{avatar:imagePath})
-                
-            })
-
-        })
+      
         
     }
   const [state, setState] = useState({ selectedFile: null})
@@ -53,7 +65,7 @@ function FilePicker() {
     
       
       setAvatar(formData);
-      navigate(`/profile/${JSON.parse(window.sessionStorage.getItem('session')).user._id}`)
+      //navigate(`/profile/${JSON.parse(window.sessionStorage.getItem('session')).user._id}`)
     };
 
 

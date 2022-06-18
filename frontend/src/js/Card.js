@@ -58,6 +58,7 @@ function Card() {
         
         console.log(imageRef)
        var promise = await getDownloadURL(imageRef).then(url=>{
+        
         setAvatar(url)
        })
       }

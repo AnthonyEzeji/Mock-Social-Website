@@ -92,15 +92,22 @@ unsub()
                 console.log(friend)
                 const q = query(collection(db,'users'), where("userName", '==', friend))
                 onSnapshot(q,async snapshot=>{
-                    var tempUserInfo = snapshot.docs[0].data()
-                    await arr4.push(tempUserInfo)
-                    console.log(tempUserInfo)
-                    console.log(arr4)
-                    if(arr4.length == friendsList.length){
-                        setFriendsFirestore(arr4.map((friend)=>{
-                            return friend
-                        }))
-                    }
+                    console.log(snapshot.docs)
+                    var tempUserInfo ={}
+                     snapshot.docs.forEach(doc=>{
+                        console.log(doc.data())
+                         arr4.push(doc.data())
+                        
+                        console.log(arr4)
+                        console.log(friendsList)
+                        if(arr4.length == friendsList.length){
+                          
+                            setFriendsFirestore(arr4.map((friend)=>{
+                                return friend
+                            }))
+                        }
+                     })
+                  
                 })
                
             })
@@ -124,7 +131,7 @@ unsub()
                     }
                 }else{
                   
-                    arr5.push({friend,avatar:""})
+                    arr5.push({friend,avatar:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUz5Ja3FzF7XunaGGuyHoX1S4-rOiFhCV63kb7aDD_OZMcWZBpyoApD1k7EQZ63N8-e3E&usqp=CAU"})
                     if(arr5.length==friendsFirestore.length){
                         setFriendsListToDisplay(arr5.map(friend=>{
                             return friend
@@ -238,7 +245,7 @@ console.log(friendsListToDisplay)
         if(inputValue.length>0){
             if(friendsList.length == 0 && friendRequests.length == 0){
                 const friendRequestsRef = collection(db, "friendRequests")
-                console.log('boob3')
+             
                 await addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
             }else if(friendsList.length != 0 && friendRequests.length == 0){
                 
@@ -263,7 +270,7 @@ console.log(friendsListToDisplay)
                         const friendRequestsRef = collection(db, "friendRequests")
                         console.log(counter)
                          counter=counter+1
-                         console.log('boob2')
+                        
                          console.log(3)
                           addDoc(friendRequestsRef, {to: inputValue, from:JSON.parse(window.sessionStorage.getItem('session')).user.userName})
                     
