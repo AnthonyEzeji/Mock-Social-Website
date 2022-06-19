@@ -170,19 +170,14 @@ const [bool, setBool] = useState(true)
 async function handlePostSubmit(e){
     var doc = {}
     if(e.key == "Enter"){
-        if(userFirestore.avatar.length>0){
-            const promise = await getDownloadURL(ref(storage, `${userFirestore.avatar}`)).then(url=>{
-                const postsRef = collection(db,'posts')
-                addDoc(postsRef, {text:e.target.value, likes:[], createdAt:serverTimestamp(),user:userFirestore, avatar:url})
-                e.target.value = ""
-            })
-        }else{
+   
+      
            
                 const postsRef = collection(db,'posts')
-                addDoc(postsRef, {text:e.target.value, likes:[], createdAt:serverTimestamp(),user:userFirestore, avatar:''})
+                addDoc(postsRef, {text:e.target.value, likes:[], createdAt: serverTimestamp(),user:userFirestore, avatar:''})
                 e.target.value = ""
-            
-        }
+     
+        
        
         
         
@@ -209,7 +204,7 @@ async function handlePostSubmit(e){
         onChange={(e)=>{setInputValue(e.target.value)}}
   aria-label="empty textarea"
   placeholder="Whats on your mind?"
-  style={{ width: "98%", }}
+  style={{ width: "98%",maxWidth:'98%',minWidth:'98%' }}
   onKeyDown={(e)=>handlePostSubmit(e)}
 />
            

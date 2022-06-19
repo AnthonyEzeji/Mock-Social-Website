@@ -1,14 +1,18 @@
 
 .MuiListItem-root{
-    background-color: rgb(68, 80, 92);
+    background-color: rgb(54, 20, 20);
   margin-top:2.5px;
+  color:white;
   margin-bottom:2.5px;
 }
 .preview{
     width: 100%;
     overflow-wrap:break-word;
     text-overflow: ellipsis;
-    height: 60px;
+    height:fit-content;
+    padding:5px;
+    max-height: 60px;
+    border-radius: 20px;
     /* Required for text-overflow to do anything */
     
     overflow: hidden;

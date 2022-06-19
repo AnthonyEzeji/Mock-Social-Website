@@ -11,12 +11,12 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { useNavigate, useParams } from 'react-router';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import '../css/drawer.css'
 import { db } from './Firebase';
 import axios from 'axios';
-import { ClickAwayListener, formControlClasses, MenuItem, Select } from '@mui/material';
+import { Avatar, ClickAwayListener, formControlClasses, MenuItem, Select } from '@mui/material';
 
 export default function TemporaryDrawer() {
   const [state, setState] = React.useState({
@@ -42,6 +42,7 @@ export default function TemporaryDrawer() {
   const [messages, setMessages] = React.useState([])
   const [messagesList, setMessagesList] = useState([])
   const [currentFriendSelection, setCurrentFriendSelection] = useState('')
+  const [userFirestore, setUserFirestore] = useState({})
   var arr = []
   var objectToPush = []
   var data = {}
@@ -156,6 +157,17 @@ return 0;
           currUser = {}
           await axios.get(`http://3.92.186.223:5000/api/users/2/${id}`).then(res=>{
              currUser = res.data
+             const q = query(collection(db,'users'), where("userName", "==", `${res.data.userName}`))
+
+             onSnapshot(q,snapshot=>{
+               console.log(snapshot.docs)
+              snapshot.docs.forEach(doc=>{
+                
+                
+                 console.log(doc.data())
+                setUserFirestore(doc.data())
+              })
+            })
             
           })
           messages.forEach(doc=>{
@@ -213,8 +225,12 @@ for(var i = 0 ; i < messagesList.length;i++){
                     window.sessionStorage.setItem('currRec', JSON.stringify(res.data))
                 })
                 navigate(`/chat/${e.target.id}`)
-            }} style={{display:'flex',flexDirection:'column',backgroundColor: 'rgba(240, 248, 255, 0.096)', color:'white', fontWeight:600}}>
-            <h5 id={obj.currUser.userName} style={{textShadow:'0px 0px', margin:0}}>{obj.currUser.userName}</h5>
+            }} style={{display:'flex',flexDirection:'column',backgroundColor: 'rgba(54, 20, 20)', color:'white', fontWeight:600}}>
+              <div style={{display:'flex', width:'fit-content', height:'fit-content', justifyContent:'center', alignItems:'center'}}>
+                <Avatar src={userFirestore.avatar}></Avatar>
+              <h4 id={obj.currUser.userName} style={{textShadow:'1px 1px black', margin:0, marginLeft:5}}>{obj.currUser.userName}</h4>
+              </div>
+            
             <p className = "preview" id={obj.currUser.userName}>{obj.data[0].text}</p>
             </ListItemButton>
           </ListItem>)
@@ -251,17 +267,18 @@ function handleClickAway(){
 
     setBool(false)
 }
+
   return (
     <div>
       {['Messages'].map((anchor) => (
         <React.Fragment key={'right'}>
-          <Button style={{height:"100%",borderLeft:'1px solid black', borderRadius:0}} onClick={()=>{setBool(true)}}>{anchor}</Button>
+          <Button className='nav-btn' style={{height:"100%",borderLeft:'1px solid black', borderRadius:0, color:'white'}} onClick={()=>{setBool(true)}}>{anchor}</Button>
          
           <Drawer
           variant='persistent'
             anchor={'right'}
             open={bool}
-           
+   
             onClose={toggleDrawer('right', false)}
             
           >

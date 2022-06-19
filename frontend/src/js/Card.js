@@ -22,7 +22,17 @@ function Card() {
           await axios.get(`http://3.92.186.223:5000/api/users/1/${params._id}`).then(res=>{
             console.log(res.data)
             setUser(res.data)
-           
+            const q = query(collection(db,'users'), where("userName", "==", `${res.data.userName}`))
+
+            onSnapshot(q,snapshot=>{
+              console.log(snapshot.docs)
+             snapshot.docs.forEach(doc=>{
+               
+               
+                console.log(doc.data())
+               setUserFirestore(doc.data())
+             })
+           })
             
           })
         
@@ -33,42 +43,10 @@ function Card() {
         
     }, [params])
   console.log(user)
-    useEffect(() => {
-      async function getUserFirestore(){
-        console.log(user)
-        const q = query(collection(db,'users'), where("userName", "==", `${user.userName}`))
-               onSnapshot(q,snapshot=>{
-                snapshot.docs.forEach(doc=>{
-                  
-                  
-                   console.log(doc.data())
-                  setUserFirestore(doc.data())
-                })
-              })
-      }
-   
-    getUserFirestore()
-    }, [user])
-    console.log(userFirestore)
-    useEffect(() => {
-      async function getAvatar(){
-        console.log(userFirestore.avatar)
-      if(typeof userFirestore.avatar !='undefined'){
-        const imageRef = ref(storage,`${userFirestore.avatar}`)
-        
-        console.log(imageRef)
-       var promise = await getDownloadURL(imageRef).then(url=>{
-        
-        setAvatar(url)
-       })
-      }
-      
-    
-      }
-      getAvatar()
 
-    }, [userFirestore]);
-    console.log(avatar)
+  console.log(userFirestore)
+    
+   
     function handleChange(){
       
       setChecked(!checked)
@@ -97,13 +75,13 @@ function Card() {
       
     }
     
-    console.log(userFirestore)
+    
     var navigate = useNavigate()
-    console.log('done')
+ 
   return (
     <div className='card'>
         <div className="card-left">
-            <Avatar onClick={()=>navigate('/file-picker')} style={{objectFit:'cover'}} src={avatar} id = 'avatar' />
+            <Avatar onClick={()=>navigate('/file-picker')} style={{objectFit:'cover'}} src={userFirestore.avatar} id = 'avatar' />
             <h5>{user.userName}</h5>
             {params._id==JSON.parse(window.sessionStorage.getItem('session')).user._id?<Switch
   checked={checked}
@@ -114,7 +92,7 @@ function Card() {
         </div>
         <div className="bio">
             <h3>Bio</h3>
-            <TextareaAutosize onChange={(e)=>{setInput(e.target.value)}} style={{textAlign:"center",width:'100%',height:'100%',maxHeight:'98%', maxWidth:"98%"}} readOnly={!checked} defaultValue={userFirestore.bio}>{}</TextareaAutosize>
+            <TextareaAutosize onChange={(e)=>{setInput(e.target.value)}} style={{textAlign:"center",width:'96%', borderRadius:'20px',height:'96%',maxHeight:'96%', maxWidth:"96%"}} readOnly={!checked} defaultValue={userFirestore.bio}>{}</TextareaAutosize>
         </div>
     </div>
   )

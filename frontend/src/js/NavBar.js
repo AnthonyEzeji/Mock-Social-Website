@@ -27,22 +27,7 @@ function NavBar() {
   }
 }, [])
 const [avatar, setAvatar] = useState('')
-useEffect(() => {
-  try {
-    async function getUserFirestore(){
-      const imageRef = ref(storage,`${userFirestore.avatar}`)
-  
-  
-      var promise = await getDownloadURL(imageRef)
-      setAvatar(promise)
-    }
-  getUserFirestore()
-  } catch (error) {
-    console.log(error)
-  }
-  
 
-}, [userFirestore]);
   var navigate = useNavigate()
   function handleLogoutClick(){
       window.sessionStorage.setItem('session',null)
@@ -58,8 +43,8 @@ useEffect(() => {
    
     <div className='navbar'>
          <Drawer></Drawer>
-        <Button onClick={handleLogoutClick} id= 'navbar-btn'>Log Out</Button>
-        <Button onClick={handleProfileClick} id= 'navbar-btn'><Avatar src={avatar}></Avatar></Button>
+        <Button  className='nav-btn' style={{color:'white'}} onClick={handleLogoutClick} id= 'navbar-btn'>Log Out</Button>
+        <Button  className='nav-btn' onClick={handleProfileClick} id= 'navbar-btn'><Avatar src={userFirestore.avatar}></Avatar></Button>
        
     </div>
   )

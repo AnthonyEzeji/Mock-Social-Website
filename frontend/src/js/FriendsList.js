@@ -18,6 +18,7 @@ function FriendsList() {
   const [users, setUsers] = useState([])
     var arr = []
     var user = {}
+    const [open, setOpen] = useState(false)
     const [friendsListToDisplay, setFriendsListToDisplay] = useState([])
     var navigate = useNavigate()
     const [friendsList, setFriendsList] = useState([])
@@ -81,7 +82,7 @@ unsub()
         }, [params])
 
      
-        
+       console.log(friendsList) 
        
        useEffect(() => {
        
@@ -118,33 +119,10 @@ unsub()
           }, [friendsList])
          
           console.log(friendsFirestore)
-        useEffect(() => {
-            var arr5 =[]
-            friendsFirestore.forEach(async(friend)=>{
-                if(friend.avatar.length>0){
-                    const url = await getDownloadURL( ref(storage,`${friend.avatar}`))
-                    arr5.push({friend,avatar:url})
-                    if(arr5.length==friendsFirestore.length){
-                        setFriendsListToDisplay(arr5.map(friend=>{
-                            return friend
-                        }))
-                    }
-                }else{
-                  
-                    arr5.push({friend,avatar:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUz5Ja3FzF7XunaGGuyHoX1S4-rOiFhCV63kb7aDD_OZMcWZBpyoApD1k7EQZ63N8-e3E&usqp=CAU"})
-                    if(arr5.length==friendsFirestore.length){
-                        setFriendsListToDisplay(arr5.map(friend=>{
-                            return friend
-                        }))
-                    }
-                }
-              
-            })
-            
-        }, [friendsFirestore])
+
         
 
-console.log(friendsListToDisplay)
+
         useEffect(() => {
           var tempArr = []
             friendRequests.forEach(async  (request)=>{
@@ -313,7 +291,16 @@ console.log(friendsListToDisplay)
         console.log(e.target.id)
         console.log(JSON.parse(window.sessionStorage.getItem('session')).user.userName)
         const friendsRef = collection(db, "friends")
-       
+        onSnapshot(friendsRef, snapshot=>{
+            snapshot.docs.forEach(async doc1=>{
+                if((doc1.data().user1 == e.target.id && doc1.data().user2 == JSON.parse(window.sessionStorage.getItem('session')).user.userName)||(doc1.data().user1 == JSON.parse(window.sessionStorage.getItem('session')).user.userName && doc1.data().user2 == e.target.id )){
+                    deleteDoc(doc(friendsRef,doc1.id))
+                }
+                
+                
+                
+            })
+        })
    
     }
   return (
@@ -326,10 +313,18 @@ console.log(friendsListToDisplay)
         onChange={(event, newValue) => {
           setValue(newValue);
         }}
+        open={open}
         inputValue={inputValue}
         onInputChange={(event, newInputValue) => {
-          setInputValue(newInputValue);
+            setInputValue(newInputValue);
+            if (newInputValue.length === 0) {
+                if (open) setOpen(false);
+              } else {
+                if (!open) setOpen(true);
+              }
+          
         }}
+        onClose={() => setOpen(false)}
         id="controllable-states-demo"
         options={users}
         sx={{ width: "100%"}}
@@ -355,16 +350,16 @@ console.log(friendsListToDisplay)
                 }
                 
             }):<></>}
-        {friendsListToDisplay.map((obj,index)=>{
+        {friendsFirestore.map((obj,index)=>{
             return(<li key={index} className='friends-list-item'>
                 <div style = {{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:'center',marginTop:5}}>
                     <Avatar style ={{marginRight:5}} src = {obj.avatar}></Avatar>
-                <p>{obj.friend.userName}</p>
+                <p>{obj.userName}</p>
                 
                 </div>
             
             <div> <Button style={{color:"black",backgroundColor:'grey', margin:5}} onClick = {(e)=>handleFriendClick(e)}>Profile</Button>
-            <Button style={{color:"black",backgroundColor:'red', margin:5}} id={obj.friend} onClick={(e)=>handleDeleteFriendClick(e)}>Delete</Button></div>
+            <Button id={obj.userName} style={{color:"black",backgroundColor:'rgb(54, 20, 20)',color:"white", margin:5}}  onClick={(e)=>handleDeleteFriendClick(e)}>Delete</Button></div>
            
         </li>)
         })}

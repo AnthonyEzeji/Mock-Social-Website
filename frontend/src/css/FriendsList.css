@@ -1,7 +1,8 @@
 .friends-list{
+    min-width:350px;
     border-radius: 20px;
     margin-top: 20px;
-    margin-left:20px;
+    margin-left:10px;
     display: flex;
     height: fit-content;
     flex-direction: column;

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router'
 import {addDoc, collection, serverTimestamp} from 'firebase/firestore'
 import {db} from './Firebase'
 import '../css/Register.css'
+import { Link } from 'react-router-dom'
 
 
 function Register() {
@@ -48,7 +49,8 @@ function Register() {
                                                 
                                                 console.log(res.data)
                                                 const usersRef=collection(db, "users")
-                                                addDoc(usersRef,{userName:res.data.userName, avatar:"",bio:"",likes:[], createdAt:serverTimestamp()})
+                                                addDoc(usersRef,{userName:res.data.userName, avatar:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUz5Ja3FzF7XunaGGuyHoX1S4-rOiFhCV63kb7aDD_OZMcWZBpyoApD1k7EQZ63N8-e3E&usqp=CAU",bio:"",likes:[], createdAt:serverTimestamp()})
+                                                navigate('/')
                                             }
                                         })
                                     }else{
@@ -75,7 +77,7 @@ function Register() {
   return (
     <div style={{display:"flex", justifyContent:"center", alignItems:"center", height:'100vh'}} className = "register">
 
-        <div style={{borderRadius:15,boxShadow: "rgb(0, 0, 0) 0px 20px 30px -10px",padding:'20px', color:"black", display:'flex', flexDirection:'column', width:"50%", justifyContent:'center', alignItems:'center'}} className="form">
+        <div  style={{borderRadius:15,boxShadow: "rgb(0, 0, 0) 0px 20px 30px -10px",padding:'20px', color:"black", display:'flex', flexDirection:'column', width:"50%", justifyContent:'center', alignItems:'center'}} className="form">
             <h5 style ={{color:"white"}}>Register</h5>
             {bool&&<div>Username Taken already</div>}
             {bool3&&<div>Username Too long! 20 characters or less</div>}
@@ -91,9 +93,9 @@ function Register() {
         <Input onChange={(e)=>{setPassword(e.target.value)}}  style={{backgroundColor:"white"}}>
         
         </Input>
-        <Button onClick={handleCreateClick} id="create-btn" style={{ color:'white'}}>""Create Account""</Button>
+        <Button onClick={handleCreateClick} id="create-btn" style={{ color:'black',backgroundColor:"gold", width:'195px', marginTop:10}}>Register</Button>
 
-        <Button onClick={()=>{navigate('/')}} style={{width:185,backgroundColor:'grey', color:'white'}}>Have an account? click here to login</Button>
+        <p style={{ color:'white'}}>Have an account? <Link style={{color:'white'}} to='/'>Login.</Link></p>
         </div>
         
     </div>

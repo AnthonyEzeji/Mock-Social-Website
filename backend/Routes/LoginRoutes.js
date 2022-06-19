@@ -9,7 +9,7 @@ router.post('/', async (req,res)=>{
     console.log(req.body)
    try{
        
-   await userModel.findOne({userName:req.body.userName}).then(doc=>{
+   await userModel.findOne({userName:req.body.userName.trim()}).then(doc=>{
 if(doc){
     if(doc.password==req.body.password){
         

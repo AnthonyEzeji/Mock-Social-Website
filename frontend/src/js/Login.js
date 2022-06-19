@@ -65,17 +65,17 @@ await axios.post('http://3.92.186.223:5000/api/login',credentials).then(res=>{
     <div className='login'>
         <div className="login-form">
             <h5>
-            Enter Username
+            Username
             </h5>
-            <TextField onChange= {(e)=>handleUserNameChange(e)} ></TextField>
+            <TextField  onChange= {(e)=>handleUserNameChange(e)} ></TextField>
             <h5>
-            Enter Password
+             Password
             </h5>
             <TextField onChange= {(e)=>handlePasswordChange(e)}  type="password"></TextField>
-            <Button onClick={(e)=>handleLoginClick(e)}>Login</Button>
+            <Button style={{color:'black',backgroundColor:"gold", margin:10, width:225}} onClick={(e)=>handleLoginClick(e)}>Login</Button>
 
             <p>
-                Don't have an account? <Link to='/register'>Register here.</Link>
+                Don't have an account? <Link style={{color:'white'}} to='/register'>Register.</Link>
             </p>
             
         </div>
