@@ -33,4 +33,4 @@ app.use('/api/users',UserRoutes)
 
 app.use('/api/login',LoginRoutes)
 
- app.listen(PORT, () => console.log(`Secure server running on port: ${PORT}`))
+ app.listen(PORT, () => console.log(`Unsecure server running on port: ${PORT}`))
